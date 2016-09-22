@@ -1,4 +1,3 @@
-*.class
 .metadata
 bin/
 tmp/
@@ -10,6 +9,9 @@ local.properties
 .settings/
 .loadpath
 .recommenders
+*hold.jpg
+*.jar
+
 
 # Eclipse Core
 .project
