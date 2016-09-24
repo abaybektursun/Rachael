@@ -29,6 +29,14 @@ public class UDPThreadManager {
 	public UDPThreadManager(Consumer<Exception> functionHandleError,
 							Consumer<DatagramPacket> functionHandlePacketReceived,
 							Supplier<DatagramPacket> functionCreatePacketToSend) {
+		this(-1, functionHandleError, functionHandlePacketReceived, functionCreatePacketToSend);
+	}
+	
+	public UDPThreadManager(int port,
+							Consumer<Exception> functionHandleError,
+							Consumer<DatagramPacket> functionHandlePacketReceived,
+							Supplier<DatagramPacket> functionCreatePacketToSend) {
+		this.port = port;
 		this.functionHandleError = functionHandleError;
 		this.functionHandlePacketReceived = functionHandlePacketReceived;
 		this.functionCreatePacketToSend = functionCreatePacketToSend;

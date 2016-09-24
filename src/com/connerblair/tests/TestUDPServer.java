@@ -1,30 +1,47 @@
 package com.connerblair.tests;
 
 import java.net.DatagramPacket;
+import java.net.InetAddress;
 
-import com.connerblair.old.UDPServer;
+import com.connerblair.UDPConnector;
 
-public class TestUDPServer extends UDPServer {
+public class TestUDPServer extends UDPConnector {
+	private static int port = 4435;
+	
+	private int portRespond = 0;
+	private InetAddress addrRespond;
+	private String msgRespond;
 	
 	public TestUDPServer() {
-		super(4435);
+		super(port);
 	}
-	
+
 	@Override
-	protected DatagramPacket packetRecieved(DatagramPacket received) {
-		String msg = new String(received.getData(), 0, received.getLength());
-		byte[] buffer = new byte[256];
+	public synchronized void handleError(Exception e) {
+		System.out.println(e.getMessage());
+	}
+
+	@Override
+	public void handlePacketReceived(DatagramPacket packet) {
+		String msg = new String(packet.getData());
 		
-		if (msg.equalsIgnoreCase("ping")) {
-			buffer = new String("pong").getBytes();
-		} else if (msg.equalsIgnoreCase("stop")) {
-			stop();
-			return null;
+		System.out.println("From client: " + msg);
+		
+		portRespond = packet.getPort();
+		addrRespond = packet.getAddress();
+		
+		if (msg.equalsIgnoreCase("ping")) {			
+			msgRespond = "pong";
 		} else {
-			buffer = new String(":(").getBytes();
+			msgRespond = "NA";
 		}
+	}
+
+	@Override
+	public DatagramPacket createPacketToSend() {
+		byte[] data = msgRespond.getBytes();
 		
-		return new DatagramPacket(buffer, buffer.length, received.getAddress(), received.getPort());
+		return new DatagramPacket(data, data.length, addrRespond, portRespond);
 	}
 	
 	public static void main(String[] args) {
