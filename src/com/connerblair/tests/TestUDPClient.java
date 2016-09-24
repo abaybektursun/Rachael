@@ -4,7 +4,7 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import com.connerblair.UDPClient;
+import com.connerblair.old.UDPClient;
 
 public class TestUDPClient extends UDPClient {
 

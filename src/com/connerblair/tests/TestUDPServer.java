@@ -2,7 +2,7 @@ package com.connerblair.tests;
 
 import java.net.DatagramPacket;
 
-import com.connerblair.UDPServer;
+import com.connerblair.old.UDPServer;
 
 public class TestUDPServer extends UDPServer {
 	
