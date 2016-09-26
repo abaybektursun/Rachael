@@ -1,22 +1,19 @@
-/* 
- * I developed some code for recognize motion detections with JavaCV.
- * Actually, it works with an array of Rect, performing, every cicle, an
- * intersection test with area of difference with the rect of interests
- * (this array is callad "sa", stands for SizedArea). I hope could this
- * helps someone.
- * 
- * Feel free to ask about any question regarding the code above, cheers!
- *
- * Angelo Marchesin <marchesin.angelo@gmail.com>
- */
-
 import org.bytedeco.javacpp.*;
+import org.bytedeco.javacpp.opencv_core.CvBox2D;
+import org.bytedeco.javacpp.opencv_core.CvContour;
+import org.bytedeco.javacpp.opencv_core.CvMemStorage;
+import org.bytedeco.javacpp.opencv_core.CvPoint2D32f;
+import org.bytedeco.javacpp.opencv_core.CvSeq;
+import org.bytedeco.javacpp.opencv_core.CvSize2D32f;
+import org.bytedeco.javacpp.opencv_core.IplImage;
 import org.bytedeco.javacv.*;
+
+import static org.bytedeco.javacpp.helper.opencv_imgproc.cvFindContours;
 import static org.bytedeco.javacpp.opencv_core.*;
 import static org.bytedeco.javacpp.opencv_imgproc.*;
 
-public class MotionDetector {
-    public static void main(String[] args) throws Exception {
+public class webTest {
+	public static void main(String[] args) throws Exception {
         OpenCVFrameGrabber grabber = new OpenCVFrameGrabber(0);
         OpenCVFrameConverter.ToIplImage converter = new OpenCVFrameConverter.ToIplImage();
         grabber.start();
@@ -26,7 +23,7 @@ public class MotionDetector {
         IplImage prevImage = null;
         IplImage diff = null;
 
-        CanvasFrame canvasFrame = new CanvasFrame("Some Title");
+        CanvasFrame canvasFrame = new CanvasFrame("Webcam Feed");
         canvasFrame.setCanvasSize(frame.width(), frame.height());
 
         CvMemStorage storage = CvMemStorage.create();
@@ -68,24 +65,7 @@ public class MotionDetector {
                         if (box != null) {
                             CvPoint2D32f center = box.center();
                             CvSize2D32f size = box.size();
-/*                            for (int i = 0; i < sa.length; i++) {
-                                if ((Math.abs(center.x - (sa[i].offsetX + sa[i].width / 2))) < ((size.width / 2) + (sa[i].width / 2)) &&
-                                    (Math.abs(center.y - (sa[i].offsetY + sa[i].height / 2))) < ((size.height / 2) + (sa[i].height / 2))) {
 
-                                    if (!alarmedZones.containsKey(i)) {
-                                        alarmedZones.put(i, true);
-                                        activeAlarms.put(i, 1);
-                                    } else {
-                                        activeAlarms.remove(i);
-                                        activeAlarms.put(i, 1);
-                                    }
-                                    System.out.println("Motion Detected in the area no: " + i +
-                                            " Located at points: (" + sa[i].x + ", " + sa[i].y+ ") -"
-                                            + " (" + (sa[i].x +sa[i].width) + ", "
-                                            + (sa[i].y+sa[i].height) + ")");
-                                }
-                            }
-*/
                         }
                     }
                     contour = contour.h_next();

@@ -9,3 +9,6 @@
 [Real-time face and hand detection using JavaCV](http://softwarependula.blogspot.com/2013/03/face-and-hand-detection-using-javacv.html)
 
 [RTP Oracle Doc](http://www.oracle.com/technetwork/java/javase/tech/avtransmit-177024.html)
+
+[BFG](https://rtyley.github.io/bfg-repo-cleaner/)
+
