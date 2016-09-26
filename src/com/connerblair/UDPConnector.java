@@ -1,6 +1,7 @@
 package com.connerblair;
 
 import java.net.DatagramPacket;
+import java.net.InetAddress;
 
 public abstract class UDPConnector {
 	private UDPThreadManager threadManager;
@@ -18,7 +19,17 @@ public abstract class UDPConnector {
 											 ()  -> this.createPacketToSend());
 	}
 	
-	public void start() {
+	public void start(String addr) {
+		if (!addr.isEmpty()) {
+			try {
+				threadManager.initialize(InetAddress.getByName(addr));
+			} catch (Exception e) {
+				
+			}
+		} else {
+			threadManager.initialize(null);
+		}
+		
 		threadManager.start();
 	}
 	

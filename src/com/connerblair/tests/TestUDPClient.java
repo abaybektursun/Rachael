@@ -12,7 +12,7 @@ public class TestUDPClient extends UDPConnector {
 	private String addrServer = "localhost";
 	private int portServer = 4435;
 	
-	private boolean sent = false;
+	private int sent = 0;
 	
 	public TestUDPClient() {
 		super(port);
@@ -25,18 +25,18 @@ public class TestUDPClient extends UDPConnector {
 	}
 
 	@Override
-	public void handlePacketReceived(DatagramPacket packet) {
+	public synchronized void handlePacketReceived(DatagramPacket packet) {
 		String msg = new String(packet.getData());
 		
 		System.out.println("From Server: " + msg);
 	}
 
 	@Override
-	public DatagramPacket createPacketToSend() {
+	public synchronized DatagramPacket createPacketToSend() {
 		byte[] msg = new String("ping").getBytes();
 		
-		if (!sent) {
-			sent = true;
+		if (sent < 1) {
+			sent++;
 			
 			InetAddress addr = null;
 			try {
@@ -53,6 +53,6 @@ public class TestUDPClient extends UDPConnector {
 	
 	public static void main(String[] args) {
 		TestUDPClient client = new TestUDPClient();
-		client.start();
+		client.start("");
 	}
 }

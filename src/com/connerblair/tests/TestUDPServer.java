@@ -10,7 +10,7 @@ public class TestUDPServer extends UDPConnector {
 	
 	private int portRespond = 0;
 	private InetAddress addrRespond;
-	private String msgRespond;
+	private volatile String msgRespond;
 	
 	public TestUDPServer() {
 		super(port);
@@ -22,7 +22,7 @@ public class TestUDPServer extends UDPConnector {
 	}
 
 	@Override
-	public void handlePacketReceived(DatagramPacket packet) {
+	public synchronized void handlePacketReceived(DatagramPacket packet) {
 		String msg = new String(packet.getData());
 		
 		System.out.println("From client: " + msg);
@@ -33,12 +33,16 @@ public class TestUDPServer extends UDPConnector {
 		if (msg.equalsIgnoreCase("ping")) {			
 			msgRespond = "pong";
 		} else {
-			msgRespond = "NA";
+			msgRespond = null;
 		}
 	}
 
 	@Override
-	public DatagramPacket createPacketToSend() {
+	public synchronized DatagramPacket createPacketToSend() {
+		if (msgRespond == null) {
+			return null;
+		}
+		
 		byte[] data = msgRespond.getBytes();
 		
 		return new DatagramPacket(data, data.length, addrRespond, portRespond);
@@ -46,6 +50,6 @@ public class TestUDPServer extends UDPConnector {
 	
 	public static void main(String[] args) {
 		TestUDPServer server = new TestUDPServer();
-		server.start();
+		server.start("localhost");
 	}
 }
