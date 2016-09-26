@@ -11,6 +11,9 @@ local.properties
 .recommenders
 *hold.jpg
 *.jar
+*.jpg
+*.png
+*.caffemodel
 
 
 # Eclipse Core
