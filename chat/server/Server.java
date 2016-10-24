@@ -1,5 +1,6 @@
-package MognoDB;
+package chat.server;
 
+// MongoDB
 import org.bson.Document;
 import java.net.UnknownHostException;
 import java.util.Date;
@@ -14,14 +15,65 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
-public class MongoDB extends Mongo {
-	MongoClient mongoClient = new MongoClient();
+import java.net.DatagramPacket;
+import java.net.InetAddress;
+
+import chat.UDPConnector;
+
+public class Server extends UDPConnector {
+	private static int port = 4435;
+	
+	private int portRespond = 0;
+	private InetAddress addrRespond;
+	private volatile String msgRespond;
+	
+	public Server() {
+		super(port);
+	}
+
+	@Override
+	public synchronized void handleError(Exception e) {
+		System.out.println(e.getMessage());
+	}
+
+	@Override
+	public synchronized void handlePacketReceived(DatagramPacket packet) {
+		String msg = new String(packet.getData());
+		
+		System.out.println("From client: " + msg);
+		
+		portRespond = packet.getPort();
+		addrRespond = packet.getAddress();
+		
+		if (msg.equalsIgnoreCase("ping")) {			
+			msgRespond = "pong";
+		} else {
+			msgRespond = null;
+		}
+	}
+
+	@Override
+	public synchronized DatagramPacket createPacketToSend() {
+		if (msgRespond == null) {
+			return null;
+		}
+		
+		byte[] data = msgRespond.getBytes();
+		
+		return new DatagramPacket(data, data.length, addrRespond, portRespond);
+	}
+	//MongoDB *****************************************************
+    MongoClient mongoClient = new MongoClient();
 	//getDatabase() doesn't creates new database
 	MongoDatabase database = mongoClient.getDatabase("mydb");
 	MongoCollection<Document> collection = database.getCollection("test");
-	
+    //MongoDB *****************************************************
+    
 	public static void main(String[] args) {
-
+		Server server = new Server();
+		server.start("localhost");
+        
+        // MongoDB *****************************************************
 	    try {
 	    	/**** Connect to MongoDB ****/
 			// Since 2.10.0, uses MongoClient
@@ -85,6 +137,5 @@ public class MongoDB extends Mongo {
             catch (MongoException e) {
 		    	e.printStackTrace();
 		    }
-	
-		  }
 	}
+}
