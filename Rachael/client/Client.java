@@ -34,32 +34,8 @@ public class Client extends Application {
     private double xOffset = 0;
     private double yOffset = 0;
     
-   
-    
-    /*public void launch(){
-        FDthread = null;
-        capture  = null;
-        bytemem  = new MatOfByte();
-        frame    = new Mat();
-        
-        System.out.println("initialize FD!");
-        
-        // Using "Haar-like" features model for face detection
-        // Pre-trained model comes with openCV
-        String haar_model_file = "models/haarcascade_frontalface_alt.xml";
-        haar_model             = new CascadeClassifier(Client.class.getResource(haar_model_file).getPath().substring(1));
-        detected_faces         = new MatOfRect();
-        
-        // User default webcam
-        capture = new VideoCapture(0);
-        
-        //Start the Thread for face detection
-        FDthread   = new faceDetection();
-        Thread fdt = new Thread(FDthread);
-        fdt.setDaemon(true);
-        FDthread.runnable = true;
-        fdt.start();    
-    }*/
+    // TODO Use either semaphore or mutex
+    ImageView view;
 
     @Override
     public void start(Stage stage){
@@ -77,7 +53,8 @@ public class Client extends Application {
         
         Group root = new Group();
         javafx.scene.image.Image image = new javafx.scene.image.Image("client/img/giphy.gif");
-        ImageView view = new ImageView(image);
+        //ImageView view = new ImageView(image);
+        view = new ImageView(image);
         root.getChildren().add(view);
         Scene scene = new Scene(root, 600, 600, Color.TRANSPARENT);
         view.setOnMouseClicked(new EventHandler<MouseEvent>(){
@@ -140,7 +117,6 @@ public class Client extends Application {
                     MatOfRect detected_faces = new MatOfRect();
                 
                 while (runnable) {
-                    System.out.println("| CHECK |");
                     if (capture.grab()) {
                         try {
                             capture.retrieve(frame);
@@ -157,10 +133,10 @@ public class Client extends Application {
                                 cropped_faces.add(new Mat(frame,crop_rect));
                             }
                             
-                            if ( cropped_faces.isEmpty() )
+                            if ( !cropped_faces.isEmpty() )
                             {
                                 System.out.println("FACE_DETECTED");
-                                //view.setImage(new javafx.scene.image.Image("client/img/giphy2.gif"));
+                                view.setImage(new javafx.scene.image.Image("client/img/giphy2.gif"));
                             }
                             else
                             {
@@ -173,67 +149,6 @@ public class Client extends Application {
                     }
                 }
             }
-        }
-    }
-
-    
-    private static class faceDetectionService extends Service {
-        
-
-        //System.out.println("initialized FD!");
-        
-        protected Task createTask() {
-        
-            return new Task() {
-                @Override
-                protected Void call() throws Exception {        
-                    // User default webcam
-                    VideoCapture capture = new VideoCapture(0);
-                    
-                    //ArrayList<Mat> cropped_faces;
-                    MatOfByte bytemem  = new MatOfByte();
-                    Mat frame = new Mat(); 
-                        
-                    // Using "Haar-like" features model for face detection
-                    // Pre-trained model comes with openCV
-                    String haar_model_file = "models/haarcascade_frontalface_alt.xml";
-                    CascadeClassifier haar_model = new CascadeClassifier(Client.class.getResource(haar_model_file).getPath().substring(1));
-                    MatOfRect detected_faces = new MatOfRect();
-                    while (true) {
-                        System.out.println("| CHECK |");
-                        if (capture.grab()) {
-                            try {
-                                capture.retrieve(frame);
-                                haar_model.detectMultiScale(frame, detected_faces);
-                                
-                                ArrayList<Mat> cropped_faces = new ArrayList<Mat>();
-                                
-                                // Iterate through all the faces
-                                for (Rect detected_box : detected_faces.toArray()) {
-                                
-                                    Rect crop_rect = new Rect(detected_box.x, detected_box.y, detected_box.width, detected_box.height);
-                                    new Mat(frame,crop_rect);
-                                    
-                                    cropped_faces.add(new Mat(frame,crop_rect));
-                                }
-                                
-                                if ( cropped_faces.isEmpty() )
-                                {
-                                    System.out.println("FACE_DETECTED");
-                                    //view.setImage(new javafx.scene.image.Image("client/img/giphy2.gif"));
-                                }
-                                else
-                                {
-                                    System.out.println("NOT_DETECTED");
-                                }
-                                
-                            } catch (Exception ex) {
-                                System.out.println("Error");
-                            }
-                        }
-                    }
-                }
-            };
         }
     }
 }
