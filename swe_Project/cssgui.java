@@ -17,9 +17,10 @@ public class cssgui extends Application {
     
     @Override
     public void start(Stage stage){
-        Group root = new Group();
-        Image image = new Image("giphy.gif");
+        Group root     = new Group();
+        Image image    = new Image("giphy.gif");
         ImageView view = new ImageView(image);
+
         root.getStylesheets().add(".idlespinner");
         Scene scene = new Scene(root, 600, 600, Color.TRANSPARENT);
         view.setOnMouseClicked(new EventHandler<MouseEvent>(){
