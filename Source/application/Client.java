@@ -1,4 +1,4 @@
-package client;
+package application;
 
 import javafx.event.*;
 import javafx.application.*;
