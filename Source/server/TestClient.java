@@ -18,7 +18,8 @@ public class TestClient {
         ) {
             
             ArrayList<Object> out_data = new ArrayList<Object>();
-            out_data.add(1);
+            out_data.add(2);
+            out_data.add("This came from client!");
             out_stream.writeObject(out_data);
             
             out_stream.close();
