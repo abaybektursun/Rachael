@@ -5,11 +5,12 @@ import java.net.*;
 
 public class Server {
     
+    static boolean listening; 
     
     public static void main(String[] args) throws IOException {
 
-        boolean listening  = true;
-        int     portNumber = 3141;
+        listening      = true;
+        int portNumber = 3141;
         
         try (ServerSocket serverSocket = new ServerSocket(portNumber)) { 
             while (listening) 
