@@ -1,14 +1,11 @@
 package client;
 
 
-import demoapp.classic.UndecoratorSceneDemo;
-import insidefx.undecorator.Undecorator;
-import insidefx.undecorator.UndecoratorScene;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.application.Application;
 
-import javafx.scene.layout.Region;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.Modality;
 import javafx.stage.StageStyle;
@@ -24,7 +21,6 @@ import javafx.scene.effect.Reflection;
 
 import javafx.fxml.FXMLLoader;
 
-import org.omg.IOP.ExceptionDetailMessage;
 import org.opencv.core.Core;
 
 public class Client extends Application {
@@ -39,29 +35,30 @@ public class Client extends Application {
 
     FaceDetection FDthread;
 
-    Stage stage123;
+    Stage contactsStage;
 
     @Override
     public void start(Stage stage){
 
-        //TEST
-
-
+        //TEST -------------------------------------------------------------------------------
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ContactsView.fxml"));
+            ContactsController controller = (ContactsController)fxmlLoader.getController();
             Parent root1 = (Parent) fxmlLoader.load();
-            stage123 = new Stage();
-            stage123.initModality(Modality.APPLICATION_MODAL);
-            stage123.initStyle(StageStyle.UNIFIED);
-            stage123.setTitle("ABC");
-            stage123.setScene(new Scene(root1));
-
-            stage123.show();
+            contactsStage = new Stage();
+            contactsStage.initModality(Modality.APPLICATION_MODAL);
+            //contactsStage.initStyle(StageStyle.UNIFIED);
+            contactsStage.setTitle("Contacts");
+            final Scene contactsScene = new Scene(root1);
+            contactsScene.getStylesheets().add(getClass().getResource("jfoenix-components.css").toExternalForm());
+            contactsStage.setScene(contactsScene);
+            contactsStage.getIcons().add(new Image("resources/img/icon.png"));
+            contactsStage.setResizable(false);
+            contactsStage.show();
 
         }
         catch(Exception lol){ lol.printStackTrace(); }
-
-        //----
+        //------------------------------------------------------------------------------------
 
 
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -87,7 +84,7 @@ public class Client extends Application {
                     if(mouseEvent.getClickCount() == 2)
                     {
                         System.out.println("Double clicked");
-                        stage123.show();
+                        contactsStage.show();
                     }
                 }
             }
