@@ -15,6 +15,7 @@ local.properties
 *.png
 *.caffemodel
 *.class
+.idea/
 
 # Eclipse Core
 .project
