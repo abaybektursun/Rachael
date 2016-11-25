@@ -9,13 +9,30 @@ import java.io.IOException;
 
 import java.net.*;
 
-public class ServerProtocol implements Runnable{
+public class ServerProtocol {
+
+    public Session tempSession()
+    {
+        Session abay = new Session(0, "Abay","Bektursun","127.0.0.1");
+
+        abay.contacts.add(new Contact("John","Mccullough",0, 1,"0"));
+        abay.contacts.add(new Contact("Frank","Arnold",   0, 2,"0"));
+        abay.contacts.add(new Contact("Aria","Melendez",  1, 3,"localhost"));
+        abay.contacts.add(new Contact("Kiley","Maddox",   1, 4,"localhost"));
+        abay.contacts.add(new Contact("Alexa","Schmidt",  2, 5,"0"));
+        abay.contacts.add(new Contact("Camryn","Kaiser",  2, 6,"0"));
+        abay.contacts.add(new Contact("Veronica","Pace",  2, 7,"0"));
+
+        return abay;
+    }
+
+class ServerConnectionThread implements Runnable {
     protected volatile boolean runnable = false;
     protected volatile String  hostName = null;
     protected volatile Integer hostPort = null;
     @Override
     public void run() {
-        synchronized (this) {
+        synchronized (this) {/*
             // Make sure this variables were set
             if (hostName != null && hostPort != null){
                 try (
@@ -40,7 +57,8 @@ public class ServerProtocol implements Runnable{
                     System.err.println("Couldn't get I/O for the connection to " + hostName);
                     //System.exit(1);
                 }
-            }
+            }*/
         }
     }
+}
 }
