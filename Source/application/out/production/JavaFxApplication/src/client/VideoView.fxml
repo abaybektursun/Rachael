@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXDrawersStack?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+
+<Pane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.112-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.VideoController">
+    <children>
+        <ImageView fx:id="currentFrame" fitHeight="248.0" fitWidth="388.0" pickOnBounds="true" preserveRatio="true" />
+        <JFXDrawersStack fx:id="drawersStack" />
+      <BorderPane fx:id="borderPane" prefHeight="200.0" prefWidth="200.0">
+         <top>
+            <JFXButton fx:id="topButton" mnemonicParsing="false"  BorderPane.alignment="CENTER" />
+         </top>
+         <left>
+         </left>
+         <center>
+         </center>
+         <right>
+         </right>
+         <bottom>
+            <JFXButton fx:id="bottomButton" mnemonicParsing="false"  BorderPane.alignment="CENTER" />
+         </bottom>
+      </BorderPane>
+    </children>
+</Pane>
