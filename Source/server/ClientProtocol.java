@@ -5,8 +5,9 @@ import java.net.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 
-import org.opencv.contrib.FaceRecognizer;
-import org.opencv.contrib.FaceRecognizer.*;
+import org.opencv.face.*;
+//import org.opencv.contrib.FaceRecognizer;
+//import org.opencv.contrib.FaceRecognizer.*;
 import org.opencv.core.Algorithm.*;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.core.Core;
@@ -21,7 +22,7 @@ public class ClientProtocol {
     public ClientProtocol(){
         this.sessionStarted = false;
         
-        FaceRecognizer model = createLBPHFaceRecognizer();
+        FaceRecognizer model = Face.createLBPHFaceRecognizer();
         model.load(modelFilePath);
         
     }
