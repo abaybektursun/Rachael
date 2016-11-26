@@ -59,6 +59,15 @@ public class ContactsController implements Initializable {
         executionThreadPool = Executors.newCachedThreadPool();
 
         mainPane.setStyle("-fx-background-color:WHITE");
+        
+        initNodesListButtons();
+
+        listView.getStyleClass().add("mylistview");
+        listView.depthProperty().set(1);
+    }
+
+    private void initNodesListButtons()
+    {
         // Node list Buttons
         JFXButton sbutton1 = new JFXButton();
         sbutton1.setTooltip(new Tooltip("Options"));
@@ -137,9 +146,6 @@ public class ContactsController implements Initializable {
         nodesListOptions.addAnimatedNode(sbutton3);
         nodesListOptions.addAnimatedNode(sbutton4);
         nodesListOptions.setRotate(90);
-
-        listView.getStyleClass().add("mylistview");
-        listView.depthProperty().set(1);
     }
 
     // Will create margins between contact cards
@@ -158,7 +164,6 @@ public class ContactsController implements Initializable {
     }
 
     public void initServices() {
-
         renderContactsTask = new Task<Void>() {
             @Override
             protected Void call() {
@@ -203,7 +208,6 @@ public class ContactsController implements Initializable {
         };
         renderRunnable = true;
         executionThreadPool.submit(renderContactsTask);
-
     }
 
 
@@ -219,6 +223,5 @@ public class ContactsController implements Initializable {
     {
         this.session = session;
     }
-
 
 }
