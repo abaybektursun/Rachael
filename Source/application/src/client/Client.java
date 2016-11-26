@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.application.Application;
 
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.Modality;
@@ -25,6 +26,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.stage.WindowEvent;
 import org.opencv.core.Core;
 
+import java.io.IOException;
+
 public class Client extends Application {
     
     private double xOffset = 0;
@@ -32,7 +35,6 @@ public class Client extends Application {
 
     Thread fdt;
 
-    // TODO Use either semaphore or mutex?
     ImageView view;
 
     FaceDetection FDthread;
@@ -45,8 +47,10 @@ public class Client extends Application {
 
     ServerProtocol server;
 
+    Stage videoStage;
+
     @Override
-    public void start(Stage stage){
+    public void start(Stage primaryStage){
 
         // This line needed to load the OpenCV
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -62,10 +66,36 @@ public class Client extends Application {
 
         //TEST -------------------------------------------------------------------------------
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ContactsView.fxml"));
-            ContactsController controller = (ContactsController)fxmlLoader.getController();
-            Parent contacsRoot = (Parent) fxmlLoader.load();
-            ContactsController contactsControl = fxmlLoader.<ContactsController>getController();
+            FXMLLoader fxmlLoaderVideo = new FXMLLoader(getClass().getResource("VideoView.fxml"));
+            VideoController videoController = (VideoController)fxmlLoaderVideo.getController();
+            Parent videoRoot = (Parent) fxmlLoaderVideo.load();
+            VideoController videoControl = fxmlLoaderVideo.<VideoController>getController();
+            videoControl.setChatService(chatService);
+            videoControl.setServerProtocol(server);
+            videoControl.setSession(thisSession);
+            videoControl.initServices();
+            videoStage = new Stage();
+            //videoStage.initModality(Modality.APPLICATION_MODAL);
+            videoStage.setTitle("Video Chat");
+            final Scene videoScene = new Scene(videoRoot);
+            // Load the style sheet
+            videoScene.getStylesheets().add(getClass().getResource("jfoenix-components.css").toExternalForm());
+            videoScene.getStylesheets().add(getClass().getResource("jfoenix-design.css").toExternalForm());
+            videoScene.setFill(Color.TRANSPARENT);
+            videoStage.setScene(videoScene);
+            //videoStage.setResizable(false);
+            videoStage.initStyle(StageStyle.TRANSPARENT);
+            videoStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //------------------------------------------------------------------------------------
+
+        try {
+            FXMLLoader fxmlLoaderContacts = new FXMLLoader(getClass().getResource("ContactsView.fxml"));
+            ContactsController controller = (ContactsController)fxmlLoaderContacts.getController();
+            Parent contacsRoot = (Parent) fxmlLoaderContacts.load();
+            ContactsController contactsControl = fxmlLoaderContacts.<ContactsController>getController();
             contactsControl.setChatService(chatService);
             contactsControl.setServerProtocol(server);
             contactsControl.setSession(thisSession);
@@ -88,7 +118,7 @@ public class Client extends Application {
             contactsStage.show();
         }
         catch(Exception lol){ lol.printStackTrace(); }
-        //------------------------------------------------------------------------------------
+
 
         
         Group root = new Group();
@@ -123,19 +153,19 @@ public class Client extends Application {
             new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
-                    stage.setX(event.getScreenX() - xOffset);
-                    stage.setY(event.getScreenY() - yOffset);
+                    primaryStage.setX(event.getScreenX() - xOffset);
+                    primaryStage.setY(event.getScreenY() - yOffset);
                 }
             }
         );
         
         view.setEffect( new Reflection() );
         //stage.setTitle("Title");
-        stage.setScene(scene);
-        stage.initStyle(StageStyle.TRANSPARENT);
-        stage.show();
+        primaryStage.setScene(scene);
+        primaryStage.initStyle(StageStyle.TRANSPARENT);
+        primaryStage.show();
 
-        stage.setOnCloseRequest(e -> Platform.exit());
+        primaryStage.setOnCloseRequest(e -> Platform.exit());
     }
 
     @Override
