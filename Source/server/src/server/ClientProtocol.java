@@ -16,7 +16,8 @@ import org.opencv.core.Mat;
 public class ClientProtocol {
     
     boolean sessionStarted;
-    String modelFilePath = "server/models/CustomModel.xml";
+    String modelFilePath = "models/CustomModel.xml";
+
     FaceRecognizer model;
     
     public ClientProtocol(){
@@ -51,7 +52,18 @@ public class ClientProtocol {
     // -----------------------------------------------------------------------
     
     // Training Process (Memorization of face)--------------------------------
-    
+    public void startMemorization(BufferedImage startImage)
+    {
+
+    }
+    public void processMemorization(BufferedImage processImage)
+    {
+
+    }
+    public void resultMemorization(BufferedImage lastImage)
+    {
+
+    }
     // -----------------------------------------------------------------------
     
     // This will return Mat converted from input buffered image
