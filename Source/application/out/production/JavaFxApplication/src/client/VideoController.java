@@ -16,18 +16,24 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import javafx.stage.Stage;
 import org.opencv.core.Mat;
 import org.opencv.highgui.Highgui;
 import org.opencv.highgui.VideoCapture;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 
 public class VideoController implements Initializable {
@@ -237,6 +243,76 @@ public class VideoController implements Initializable {
                 }
         );
     }
+
+    public void startCallReceiver(Socket socket)
+    {
+        callReceiver callReceiverTask = new callReceiver(socket);
+        executionThreadPool.submit(callReceiverTask);
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+    public class callReceiver extends Task {
+        Session session;
+        ScheduledExecutorService executor;
+        Stage videoStage;
+        ScheduledFuture<?> future;
+        Socket socket;
+
+        public callReceiver(Socket socket)
+        {
+            this.socket = socket;
+        }
+
+        @Override
+        public Void call() {
+
+            Runnable listen = new Runnable() {
+                @Override
+                public void run() {
+                    try (
+                            // IO streams
+                            ObjectOutputStream out_stream = new ObjectOutputStream(socket.getOutputStream());
+                            ObjectInputStream in_stream  = new ObjectInputStream (socket.getInputStream ());
+                    ){
+                        ArrayList<Object> in_data;
+                        // This will result EOFException if there is no more data in the queue
+                        in_data  = (ArrayList<Object>)in_stream.readObject();
+                        int scenario = (Integer)in_data.get(0);
+
+                        if (scenario == RachaelUtil.CODE_CALL_REQUEST)
+                        {
+                            BufferedImage stdBuffImage = (BufferedImage)in_data.get(1);
+                            Image jFX_image = SwingFXUtils.toFXImage(stdBuffImage, null);
+                            Platform.runLater(new Runnable() {
+                                @Override public void run() { currentFrame.setImage(jFX_image); }
+                            });
+                        }
+                        else
+                        {
+                            System.out.println("THIS IS NOT A CALL REQUEST!");
+                        }
+
+                    }
+                    catch (SocketTimeoutException toe){toe.printStackTrace();}
+                    // Empty Stream, or it's ended
+                    // Assuming this is fine case
+                    catch (EOFException eofe){}
+                    catch (IOException ioe){ioe.printStackTrace(); }
+                    catch (ClassNotFoundException cnfe){cnfe.printStackTrace(); }
+
+
+
+                    //future.cancel(false);
+                }
+            };
+            executor = Executors.newSingleThreadScheduledExecutor();
+            executor.scheduleAtFixedRate(listen, 0, 50, TimeUnit.MILLISECONDS);
+
+
+            return null;
+        }
+    }
+//----------------------------------------------------------------------------------------------------------------------
 
 
 }

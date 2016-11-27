@@ -17,10 +17,6 @@ class callRequest extends Task {
     String IP;
     Session session;
 
-    private final int NO_RESPONSE = 0;
-    private final int ACCEPTED    = 1;
-    private final int DECLINED    = 2;
-
     public final static int ALLOCATE_BUFFER = 5022386;
     public final static int RESPONSE_BUFFER_SIZE = 128;
 
