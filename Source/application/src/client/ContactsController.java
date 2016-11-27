@@ -3,16 +3,16 @@ package client;
 import com.jfoenix.controls.JFXNodesList;
 import javafx.animation.Interpolator;
 import javafx.application.Platform;
-import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.text.Font;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.animation.KeyValue;
@@ -21,33 +21,35 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 
 import javafx.event.ActionEvent;
+import javafx.scene.paint.Color;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.ResourceBundle;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
 public class ContactsController implements Initializable {
-
     @FXML
     volatile JFXListView<Label> listView;
-
     @FXML
     JFXNodesList nodesListOptions;
-
     @FXML
     AnchorPane mainPane;
 
-    ChatService service;
     ServerProtocol server;
     Session session;
+
+    Stage videoStage;
+
 
     ExecutorService executionThreadPool;
     Task<Void> renderContactsTask;
@@ -59,7 +61,7 @@ public class ContactsController implements Initializable {
         executionThreadPool = Executors.newCachedThreadPool();
 
         mainPane.setStyle("-fx-background-color:WHITE");
-        
+
         initNodesListButtons();
 
         listView.getStyleClass().add("mylistview");
@@ -113,10 +115,12 @@ public class ContactsController implements Initializable {
             @Override public void handle(ActionEvent e) {
                 int selectedIndex = listView.getFocusModel().getFocusedIndex();
                 // Check that both receiver and the client are available
-                if (session.contacts.get(selectedIndex).status == 1 && !(service.getStatus()) )
+                if (session.contacts.get(selectedIndex).status == session.AVAILABLE && session.getStatus() == session.AVAILABLE )
                 {
                     System.out.println("Selected index: " + selectedIndex);
-                    service.callRequest(session.contacts.get(selectedIndex).IP);
+                    callRequest requestCall = new callRequest(session.contacts.get(selectedIndex).IP,session);
+                    //callRequestTask request = new callRequestTask(session.contacts.get(selectedIndex).IP);
+                    executionThreadPool.submit(requestCall);
                 }
             }
         });
@@ -208,13 +212,89 @@ public class ContactsController implements Initializable {
         };
         renderRunnable = true;
         executionThreadPool.submit(renderContactsTask);
+        initVideoChat();
     }
 
 
-    public void setChatService(ChatService service)
+    class callRequestTask extends Task<Void>
     {
-        this.service = service;
+        private volatile String callAddress;
+        public callRequestTask(String callAddress)
+        {
+            this.callAddress = callAddress;
+        }
+        @Override
+        protected Void call() {
+            if(session.getStatus() == session.AVAILABLE) {
+                session.busy();
+                try {
+                    InetAddress address = InetAddress.getByName(callAddress);
+                    DatagramSocket socket = new DatagramSocket();
+                    socket.setSoTimeout(3000);
+                    byte[] buf = new byte[128];
+                    // Request
+                    DatagramPacket packet = new DatagramPacket(buf, buf.length, address, session.getDefaultPort());
+                    socket.send(packet);
+                    // Response
+                    packet = new DatagramPacket(buf, buf.length);
+                    socket.receive(packet);
+
+                    ByteArrayInputStream ByteInStream = new ByteArrayInputStream(packet.getData());
+                    DataInputStream DataInStream      = new DataInputStream(ByteInStream);
+
+                    int response = DataInStream.readInt();
+
+                    if (response == 0)
+                    {
+                        session.available();
+                    }
+                    else
+                    {
+                        videoStage.show();
+                    }
+
+                    socket.close();
+                }catch (Exception iae) {iae.printStackTrace(); session.available();}
+            }
+            else{
+                System.out.println("Busy");
+            }
+            return null;
+        }
     }
+
+
+    private void initVideoChat(){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    FXMLLoader fxmlLoaderVideo = new FXMLLoader(getClass().getResource("VideoView.fxml"));
+                    VideoController videoController = (VideoController)fxmlLoaderVideo.getController();
+                    Parent videoRoot = (Parent) fxmlLoaderVideo.load();
+                    VideoController videoControl = fxmlLoaderVideo.<VideoController>getController();
+                    videoControl.setServerProtocol(server);
+                    videoControl.setSession(session);
+                    videoControl.initServices();
+                    videoStage = new Stage();
+                    //videoStage.initModality(Modality.WINDOW_MODAL);
+                    videoStage.setTitle("Video Chat");
+                    final Scene videoScene = new Scene(videoRoot);
+                    // Load the style sheet
+                    videoScene.getStylesheets().add(getClass().getResource("jfoenix-components.css").toExternalForm());
+                    videoScene.getStylesheets().add(getClass().getResource("jfoenix-design.css").toExternalForm());
+                    videoScene.setFill(Color.TRANSPARENT);
+                    videoStage.setScene(videoScene);
+                    //videoStage.setResizable(false);
+                    videoStage.initStyle(StageStyle.TRANSPARENT);
+                    //videoStage.show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
     public void setServerProtocol(ServerProtocol server)
     {
         this.server = server;

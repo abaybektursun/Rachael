@@ -12,7 +12,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
@@ -32,29 +31,22 @@ import java.util.concurrent.TimeUnit;
 
 
 public class VideoController implements Initializable {
-
     @FXML
     private ImageView currentFrame;
-
     @FXML
     private JFXDrawersStack drawersStack;
-
     @FXML
     private Pane mainPane;
-
     @FXML
     private BorderPane borderPane;
-
     @FXML
     private JFXButton topButton;
     @FXML
     private JFXButton bottomButton;
 
-    ChatService service;
     ServerProtocol server;
     Session session;
 
-    Task cameraTask;
     ExecutorService executionThreadPool;
     volatile boolean cameraActive = false;
 
@@ -73,7 +65,6 @@ public class VideoController implements Initializable {
 
     private void initDrawers(){
         //content.setMaxSize(200, 200);
-
         JFXDrawer leftDrawer = new JFXDrawer();
         StackPane leftDrawerPane = new StackPane();
         leftDrawerPane.getStyleClass().add("red-400");
@@ -82,8 +73,6 @@ public class VideoController implements Initializable {
         leftDrawer.setDefaultDrawerSize(150);
         leftDrawer.setOverLayVisible(false);
         leftDrawer.setResizableOnDrag(true);
-
-
 
         JFXDrawer bottomDrawer = new JFXDrawer();
         StackPane bottomDrawerPane = new StackPane();
@@ -95,7 +84,6 @@ public class VideoController implements Initializable {
         bottomDrawer.setOverLayVisible(false);
         bottomDrawer.setResizableOnDrag(true);
 
-
         JFXDrawer rightDrawer = new JFXDrawer();
         StackPane rightDrawerPane = new StackPane();
         rightDrawerPane.getStyleClass().add("blue-400");
@@ -106,8 +94,6 @@ public class VideoController implements Initializable {
         rightDrawer.setOverLayVisible(false);
         rightDrawer.setResizableOnDrag(true);
 
-
-
         JFXDrawer topDrawer = new JFXDrawer();
         StackPane topDrawerPane = new StackPane();
         topDrawerPane.getStyleClass().add("green-400");
@@ -117,7 +103,6 @@ public class VideoController implements Initializable {
         topDrawer.setSidePane(topDrawerPane);
         topDrawer.setOverLayVisible(false);
         topDrawer.setResizableOnDrag(true);
-
 
         drawersStack.setContent(borderPane);
         leftDrawer.setId("LEFT");
@@ -133,21 +118,6 @@ public class VideoController implements Initializable {
         });
     }
 
-
-    public BufferedImage Mat2BufferedImage(Mat matrix){
-        int channelType = BufferedImage.TYPE_BYTE_GRAY;
-        if ( matrix.channels() > 1 ) {
-            channelType = BufferedImage.TYPE_3BYTE_BGR;
-        }
-        int bufferSize = matrix.channels()*matrix.cols()*matrix.rows();
-        byte [] b = new byte[bufferSize];
-        matrix.get(0,0,b); // get all the pixels
-        BufferedImage image = new BufferedImage(matrix.cols(),matrix.rows(), channelType);
-        final byte[] targetPixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
-        System.arraycopy(b, 0, targetPixels, 0, b.length);
-        return image;
-
-    }
 
     private void stopCameraFeed()
     {
@@ -167,71 +137,69 @@ public class VideoController implements Initializable {
     }
 
     public void initServices() {
+        //executionThreadPool.submit(cameraTask);
+    }
 
-        cameraTask = new Task<Void>() {
-            @Override
-            protected Void call() {
-                if (!cameraActive)
+
+     class cameraTask extends Task {
+        @Override
+        protected Void call() {
+            if (!cameraActive)
+            {
+                // start the default video cam
+                capture.open(0);
+                // Chech if the video stream available
+                if (capture.isOpened())
                 {
-                    // start the default video cam
-                    capture.open(0);
-                    // Chech if the video stream available
-                    if (capture.isOpened())
-                    {
-                        // Get the resolution of the camera
-                        double camWidth  = capture.get(Highgui.CV_CAP_PROP_FRAME_WIDTH);
-                        double camHeight = capture.get(Highgui.CV_CAP_PROP_FRAME_HEIGHT);
-                        drawersStack.setPrefSize(camWidth,camHeight);
-                        currentFrame.setFitHeight(camHeight);
-                        currentFrame.setFitWidth(camWidth);
-                        mainPane.setPrefSize(camWidth,camHeight);
-                        borderPane.setPrefSize(camWidth,camHeight);
-                        bottomButton.setPrefSize(camWidth,camHeight/3);
-                        topButton.setPrefSize(camWidth,camHeight/3);
-                        cameraActive = true;
+                    // Get the resolution of the camera
+                    double camWidth  = capture.get(Highgui.CV_CAP_PROP_FRAME_WIDTH);
+                    double camHeight = capture.get(Highgui.CV_CAP_PROP_FRAME_HEIGHT);
+                    drawersStack.setPrefSize(camWidth,camHeight);
+                    currentFrame.setFitHeight(camHeight);
+                    currentFrame.setFitWidth(camWidth);
+                    mainPane.setPrefSize(camWidth,camHeight);
+                    borderPane.setPrefSize(camWidth,camHeight);
+                    bottomButton.setPrefSize(camWidth,camHeight/3);
+                    topButton.setPrefSize(camWidth,camHeight/3);
+                    cameraActive = true;
 
-                        // capture video according to set 'timer' parameter
-                        Runnable frameGrabber = new Runnable() {
+                    // capture video according to set 'timer' parameter
+                    Runnable frameGrabber = new Runnable() {
 
-                            @Override
-                            public void run()
-                            {
-                                // Capture a frame from camera
-                                Mat frame = new Mat();
-                                capture.read(frame);
-                                // convert and show the frame
-                                BufferedImage stdBuffImage = Mat2BufferedImage(frame);
-                                Image jFX_image = SwingFXUtils.toFXImage(stdBuffImage, null);
+                        @Override
+                        public void run()
+                        {
+                            // Capture a frame from camera
+                            Mat frame = new Mat();
+                            capture.read(frame);
+                            // convert and show the frame
+                            BufferedImage stdBuffImage = RachaelUtil.Mat2BufferedImage(frame);
+                            Image jFX_image = SwingFXUtils.toFXImage(stdBuffImage, null);
 
-                                Platform.runLater(new Runnable() {
-                                    @Override public void run() { currentFrame.setImage(jFX_image); }
-                                });
-                            }
-                        };
+                            Platform.runLater(new Runnable() {
+                                @Override public void run() { currentFrame.setImage(jFX_image); }
+                            });
+                        }
+                    };
 
-                        timer = Executors.newSingleThreadScheduledExecutor();
-                        timer.scheduleAtFixedRate(frameGrabber, 0, 50, TimeUnit.MILLISECONDS);
-                    }
-                    else
-                    { System.err.println("Failed to open camera!"); }
+                    timer = Executors.newSingleThreadScheduledExecutor();
+                    timer.scheduleAtFixedRate(frameGrabber, 0, 50, TimeUnit.MILLISECONDS);
                 }
                 else
-                {
-                    // the camera is not active
-                    cameraActive = false;
-                    // stop the timer
-                    stopCameraFeed();
-                }
-                return null;
+                { System.err.println("Failed to open camera!"); }
             }
-        };
-        executionThreadPool.submit(cameraTask);
-    }
+            else
+            {
+                // the camera is not active
+                cameraActive = false;
+                // stop the timer
+                stopCameraFeed();
+            }
+            return null;
+        }
+    };
 
-    public void setChatService(ChatService service)
-    {
-        this.service = service;
-    }
+
     public void setServerProtocol(ServerProtocol server)
     {
         this.server = server;
@@ -269,8 +237,6 @@ public class VideoController implements Initializable {
                 }
         );
     }
-
-
 
 
 }
