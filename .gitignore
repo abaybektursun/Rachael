@@ -1,3 +1,6 @@
+# DO not ignore images
+!Source\application\img
+
 .metadata
 bin/
 tmp/

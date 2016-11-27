@@ -49,11 +49,13 @@ public class ContactsController implements Initializable {
     Session session;
 
     Stage videoStage;
+    VideoController videoController;
 
 
     ExecutorService executionThreadPool;
     Task<Void> renderContactsTask;
     volatile boolean renderRunnable = false;
+
 
     @Override
     public void initialize(URL url, ResourceBundle rb)
@@ -213,6 +215,8 @@ public class ContactsController implements Initializable {
         renderRunnable = true;
         executionThreadPool.submit(renderContactsTask);
         initVideoChat();
+        //callListener call_listener = new callListener(session, videoStage, videoController);
+        //executionThreadPool.submit(call_listener);
     }
 
 
@@ -270,7 +274,7 @@ public class ContactsController implements Initializable {
             public void run() {
                 try {
                     FXMLLoader fxmlLoaderVideo = new FXMLLoader(getClass().getResource("VideoView.fxml"));
-                    VideoController videoController = (VideoController)fxmlLoaderVideo.getController();
+                    videoController = (VideoController)fxmlLoaderVideo.getController();
                     Parent videoRoot = (Parent) fxmlLoaderVideo.load();
                     VideoController videoControl = fxmlLoaderVideo.<VideoController>getController();
                     videoControl.setServerProtocol(server);
