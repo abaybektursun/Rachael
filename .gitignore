@@ -1,5 +1,5 @@
 # DO not ignore images
-!Source\application\img
+!Source/application/img/*
 
 .metadata
 bin/
