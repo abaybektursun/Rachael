@@ -99,7 +99,7 @@ public class Client extends Application {
         //------------------------------------------------------------------------------------
         
         Group root = new Group();
-        javafx.scene.image.Image image = new javafx.scene.image.Image("img/giphy2.gif");
+        javafx.scene.image.Image image = new javafx.scene.image.Image("img/giphy.gif");
         //ImageView view = new ImageView(image);
         view = new ImageView(image);
         root.getChildren().add(view);

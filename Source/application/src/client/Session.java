@@ -1,8 +1,9 @@
 package client;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Session {
+public class Session implements Serializable {
     private final String firstName;
     private final String lastName;
     private final int defaultPort;
