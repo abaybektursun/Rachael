@@ -1,5 +1,7 @@
 # DO not ignore images
-!Source/application/img/*
+!Source/application/img/*.png
+!Source/application/img/*.ico
+
 
 .metadata
 bin/
@@ -15,7 +17,7 @@ local.properties
 *hold.jpg
 *.jar
 *.jpg
-*.png
+#*.png
 *.caffemodel
 *.class
 .idea/
