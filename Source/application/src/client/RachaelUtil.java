@@ -8,7 +8,6 @@ class RachaelUtil {
 
     public static final int CODE_CALL_REQUEST = 11;
 
-
     private final int NO_RESPONSE = 0;
     private final int ACCEPTED    = 1;
     private final int DECLINED    = 2;
@@ -26,6 +25,5 @@ class RachaelUtil {
         final byte[] targetPixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
         System.arraycopy(b, 0, targetPixels, 0, b.length);
         return image;
-
     }
 }
