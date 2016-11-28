@@ -117,13 +117,14 @@ public class ContactsController implements Initializable {
         sbutton3.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 int selectedIndex = listView.getFocusModel().getFocusedIndex();
-                // Check that both receiver and the client are available
-                if (session.contacts.get(selectedIndex).status == session.AVAILABLE && session.getStatus() == session.AVAILABLE )
-                {
-                    System.out.println("Selected index: " + selectedIndex);
-                    callRequest requestCall = new callRequest(session.contacts.get(selectedIndex).IP,session);
-                    //callRequestTask request = new callRequestTask(session.contacts.get(selectedIndex).IP);
-                    executionThreadPool.submit(requestCall);
+                if(!(selectedIndex < 0)) {
+                    // Check that both receiver and the client are available
+                    if (session.contacts.get(selectedIndex).status == session.AVAILABLE && session.getStatus() == session.AVAILABLE) {
+                        System.out.println("Selected index: " + selectedIndex);
+                        callRequest requestCall = new callRequest(session.contacts.get(selectedIndex).IP, session);
+                        //callRequestTask request = new callRequestTask(session.contacts.get(selectedIndex).IP);
+                        executionThreadPool.submit(requestCall);
+                    }
                 }
             }
         });

@@ -103,11 +103,13 @@ public class VideoController implements Initializable {
         JFXDrawer topDrawer = new JFXDrawer();
         StackPane topDrawerPane = new StackPane();
         topDrawerPane.getStyleClass().add("green-400");
-        acceptB = new JFXButton("Accept");
-        BackgroundImage backgroundImage = new BackgroundImage( new Image("img/phone_icon.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
-        Background acceptBbackground = new Background(backgroundImage);
-        acceptB.setBackground(acceptBbackground);
-
+        acceptB = new JFXButton();
+        JFXButton acceptB = new JFXButton();
+        try {
+            acceptB.setGraphic(new ImageView(new Image(new FileInputStream("img/phone_icon.png"))));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
         topDrawerPane.getChildren().add(acceptB);
         topDrawer.setDirection(JFXDrawer.DrawerDirection.TOP);
         topDrawer.setDefaultDrawerSize(150);

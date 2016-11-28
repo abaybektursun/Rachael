@@ -12,6 +12,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
@@ -83,6 +84,7 @@ public class VideoController implements Initializable {
         StackPane bottomDrawerPane = new StackPane();
         bottomDrawerPane.getStyleClass().add("red-400");
         JFXButton cancelB = new JFXButton("Cancel Call");
+        cancelB.setTextFill(Paint.valueOf("white"));
         bottomDrawerPane.getChildren().add(cancelB);
         bottomDrawer.setDefaultDrawerSize(150);
         bottomDrawer.setDirection(JFXDrawer.DrawerDirection.BOTTOM);
