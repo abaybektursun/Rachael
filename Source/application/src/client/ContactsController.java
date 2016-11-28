@@ -291,7 +291,7 @@ public class ContactsController implements Initializable {
             videoScene.setFill(Color.TRANSPARENT);
             videoStage.setScene(videoScene);
             //videoStage.setResizable(false);
-            videoStage.initStyle(StageStyle.UTILITY);
+            videoStage.initStyle(StageStyle.TRANSPARENT);
             //videoStage.show();
             videoStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
                 @Override
