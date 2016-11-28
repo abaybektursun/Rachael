@@ -21,12 +21,10 @@ import org.opencv.core.Mat;
 import org.opencv.highgui.Highgui;
 import org.opencv.highgui.VideoCapture;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
@@ -298,8 +296,14 @@ public class VideoController implements Initializable {
 
                         if (scenario == RachaelUtil.CODE_CALL_REQUEST)
                         {
-                            BufferedImage stdBuffImage = (BufferedImage)in_data.get(1);
-                            Image jFX_image = SwingFXUtils.toFXImage(stdBuffImage, null);
+                            byte[] imageInByte = (byte[])in_data.get(1);
+                            InputStream in = new ByteArrayInputStream(imageInByte);
+                            BufferedImage bImageFromConvert = ImageIO.read(in);
+
+
+
+
+                            Image jFX_image = SwingFXUtils.toFXImage(bImageFromConvert, null);
                             Platform.runLater(new Runnable() {
                                 @Override public void run() { currentFrame.setImage(jFX_image); }
                             });

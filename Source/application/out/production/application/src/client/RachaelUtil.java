@@ -28,4 +28,6 @@ class RachaelUtil {
         System.arraycopy(b, 0, targetPixels, 0, b.length);
         return image;
     }
+
+    //out.defaultWriteObject() and then ImageIO.write(image, "jpeg", out)
 }
