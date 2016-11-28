@@ -39,12 +39,12 @@ public class callListener extends Task {
                         videoStage.show();
                         future.cancel(false);
                     }
-                    catch(SocketException ex){System.out.println("Socket is closed");}
+                    catch(SocketException ex){/*System.out.println("Socket is closed");*/}
                     catch(IOException ioex){ioex.printStackTrace();}
                 }
             };
             executor = Executors.newSingleThreadScheduledExecutor();
-            executor.scheduleAtFixedRate(listen, 0, 50, TimeUnit.MILLISECONDS);
+            executor.scheduleAtFixedRate(listen, 0, 0, TimeUnit.MILLISECONDS);
         }
         catch (Exception e) {
             System.err.println("Could not start the server on port: " + session.getDefaultPort());
