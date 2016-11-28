@@ -49,7 +49,7 @@ class callRequest extends Task {
             try {
                 int response;
                 socket = new Socket(IP, session.getDefaultPort());
-                socket.setSoTimeout(3000);
+                //socket.setSoTimeout(3000);
                 System.out.println("Connecting...");
 
                 // IO streams
@@ -60,6 +60,10 @@ class callRequest extends Task {
                 out_data.add(RachaelUtil.CODE_CALL_REQUEST);
                 out_data.add(singleFrame);
                 out_stream.writeObject(out_data);
+
+                // TODO Remove debug
+                System.out.println("Sent!");
+                // TODO Remove debug
 
                 out_stream.close();
                 in_stream.close();
