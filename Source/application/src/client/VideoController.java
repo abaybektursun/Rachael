@@ -20,6 +20,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import org.opencv.core.Mat;
 import org.opencv.highgui.Highgui;
 import org.opencv.highgui.VideoCapture;
@@ -61,6 +62,7 @@ public class VideoController implements Initializable {
     ExecutorService executionThreadPool;
     volatile boolean cameraActive = false;
     public volatile boolean callAcceptedIn = false;
+    public volatile boolean callAcceptedOut = false;
 
     // the OpenCV object that realizes the video capture
     private VideoCapture capture = new VideoCapture();
@@ -147,6 +149,8 @@ public class VideoController implements Initializable {
                 Platform.runLater(new Runnable() {
                     @Override public void run() {
                         mediaPlayer.stop();
+
+                        topDrawerPane.getChildren().remove(acceptB);
                     }
                 });
                 //------------------------------------------------
@@ -440,16 +444,79 @@ public class VideoController implements Initializable {
                 };
                 executionThreadPool.submit(miniRespond);
 
+
+
                 while (continListening && miniResponding)
                 {
                     //wait
+                }
+
+                if(callAcceptedIn)
+                {
+                    Task acceptedCallOutputStream = new Task<Void>() {
+                        @Override
+                        protected Void call() throws IOException {
+
+                            // the OpenCV object that realizes the video capture
+                            VideoCapture capture = new VideoCapture();
+                            // start the default video cam
+                            capture.open(0);
+
+                            ArrayList<Object> acceptedData = new ArrayList<Object>();
+                            acceptedData.add(session.ACCEPTED);
+                            out_stream.writeObject(acceptedData);
+
+
+                            if (capture.isOpened()) {
+                                while(callAcceptedIn)
+                                {
+                                    // Capture a frame from camera
+                                    Mat frame = new Mat();
+                                    capture.read(frame);
+                                    // convert and show the frame
+                                    BufferedImage singleFrame = RachaelUtil.Mat2BufferedImage(frame);
+
+                                    ArrayList<Object> out_data = new ArrayList<Object>();
+                                    out_data.add(session.CODE_ACCEPTED_FRAME);
+
+                                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                    try {
+                                        ImageIO.write(singleFrame, "jpg", baos);
+                                    }
+                                    catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    try {
+                                        baos.flush();
+                                    }
+                                    catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    byte[] imageInByte = baos.toByteArray();
+
+                                    out_data.add(imageInByte);
+
+                                    out_stream.writeObject(out_data);
+
+                                    baos.close();
+
+                                }
+
+                            }
+
+                            return null;
+                        }
+                    };
+                    executionThreadPool.submit(acceptedCallOutputStream);
+
                 }
                 while (callAcceptedIn)
                 {
                     //wait
                 }
 
-            } catch (SocketTimeoutException toe) {
+            }
+            catch (SocketTimeoutException toe) {
                 toe.printStackTrace();
             }
             // Empty Stream, or it's ended
@@ -458,6 +525,11 @@ public class VideoController implements Initializable {
             }
             catch (IOException ioe) {
                 ioe.printStackTrace();
+                callAcceptedIn = false;
+                continListening = false;
+                miniResponding = false;
+                capture.release();
+
             }
             /*catch (ClassNotFoundException cnfe) {
                 cnfe.printStackTrace();
@@ -469,6 +541,5 @@ public class VideoController implements Initializable {
 
     }
 //----------------------------------------------------------------------------------------------------------------------
-
 
 }

@@ -121,7 +121,7 @@ public class ContactsController implements Initializable {
                     // Check that both receiver and the client are available
                     if (session.contacts.get(selectedIndex).status == session.AVAILABLE && session.getStatus() == session.AVAILABLE) {
                         System.out.println("Selected index: " + selectedIndex);
-                        callRequest requestCall = new callRequest(session.contacts.get(selectedIndex).IP, session);
+                        callRequest requestCall = new callRequest(session.contacts.get(selectedIndex).IP, session, videoStage, videoController);
                         //callRequestTask request = new callRequestTask(session.contacts.get(selectedIndex).IP);
                         executionThreadPool.submit(requestCall);
                     }
