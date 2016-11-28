@@ -53,12 +53,6 @@ public class Client extends Application {
         // This line needed to load the OpenCV
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
-        //FDthread = new FaceDetection();
-        //fdt = new Thread(FDthread);
-        //fdt.setDaemon(true);
-        //FDthread.runnable = true;
-        //fdt.start();
-
         //server = new ServerProtocol("192.168.1.103",3141);
         server = new ServerProtocol();
         thisSession = server.tempSession();
@@ -89,11 +83,21 @@ public class Client extends Application {
                             @Override
                             public void handle(WindowEvent event) { event.consume(); contactsStage.setIconified(true);}
                         });
-                        contactsStage.show();
+                        //contactsStage.show();
+
+                        FDthread = new FaceDetection(contactsStage);
+                        fdt = new Thread(FDthread);
+                        fdt.setDaemon(true);
+                        FDthread.runnable = true;
+                        fdt.start();
                     }
                     catch(Exception lol){ lol.printStackTrace(); }
             }
         });
+
+
+
+
 
 
         //TEST -------------------------------------------------------------------------------
