@@ -145,7 +145,7 @@ public class VideoController implements Initializable {
     }
 
 
-     class cameraTask extends Task {
+    class cameraTask extends Task {
         @Override
         protected Void call() {
             if (!cameraActive)
@@ -255,7 +255,7 @@ public class VideoController implements Initializable {
         //TODO Debug
     }
 
-//----------------------------------------------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------------------------------------------
     public class callReceiver extends Task {
         Session session;
         ScheduledExecutorService executor;
@@ -272,15 +272,16 @@ public class VideoController implements Initializable {
         @Override
         public Void call() {
             listen = true;
-            while (listen) {
-                //TODO Debug
-                System.out.println("try start");
-                //TODO Debug
-                try (
-                        // IO streams
-                        ObjectOutputStream out_stream = new ObjectOutputStream(socket.getOutputStream());
-                        ObjectInputStream in_stream = new ObjectInputStream(socket.getInputStream());
-                ) {
+
+            //TODO Debug
+            System.out.println("try start");
+            //TODO Debug
+            try (
+                    // IO streams
+                    ObjectOutputStream out_stream = new ObjectOutputStream(socket.getOutputStream());
+                    ObjectInputStream in_stream = new ObjectInputStream(socket.getInputStream());
+            ) {
+                while (listen) {
                     //TODO Debug
                     System.out.println("try finish");
                     //TODO Debug
@@ -302,35 +303,37 @@ public class VideoController implements Initializable {
                                 currentFrame.setImage(jFX_image);
                             }
                         });
-                    }
-                    else if (scenario == Session.CODE_ROLL_BACK_CALL_REQUEST)
-                    {
+                    } else if (scenario == Session.CODE_ROLL_BACK_CALL_REQUEST) {
                         Platform.runLater(new Runnable() {
-                            @Override public void run() { videoStage.hide(); }
+                            @Override
+                            public void run() {
+                                videoStage.hide();
+                            }
                         });
+                        listen = false;
                         break;
-                    }
-                    else {
+                    } else {
                         System.out.println("Unknown Request code");
                     }
+                }
 
-                } catch (SocketTimeoutException toe) {
-                    toe.printStackTrace();
-                }
-                // Empty Stream, or it's ended
-                // Assuming this is fine case
-                catch (EOFException eofe) {
-                } catch (IOException ioe) {
-                    ioe.printStackTrace();
-                } catch (ClassNotFoundException cnfe) {
-                    cnfe.printStackTrace();
-                }
+            } catch (SocketTimeoutException toe) {
+                toe.printStackTrace();
             }
+            // Empty Stream, or it's ended
+            // Assuming this is fine case
+            catch (EOFException eofe) {
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            } catch (ClassNotFoundException cnfe) {
+                cnfe.printStackTrace();
+            }
+
 
             return null;
         }
 
-        }
+    }
 //----------------------------------------------------------------------------------------------------------------------
 
 
