@@ -55,6 +55,8 @@ public class VideoController implements Initializable {
     Media sound;
     MediaPlayer mediaPlayer;
     Stage thisStage;
+    StackPane bottomDrawerPane;
+    StackPane topDrawerPane;
 
     ServerProtocol server;
     Session session;
@@ -94,7 +96,7 @@ public class VideoController implements Initializable {
         //leftDrawer.setResizableOnDrag(true);
 
         JFXDrawer bottomDrawer = new JFXDrawer();
-        StackPane bottomDrawerPane = new StackPane();
+        bottomDrawerPane = new StackPane();
         bottomDrawerPane.getStyleClass().add("red-400");
         JFXButton cancelB = new JFXButton("Cancel Call");
         cancelB.setTextFill(Paint.valueOf("white"));
@@ -131,7 +133,7 @@ public class VideoController implements Initializable {
         //rightDrawer.setResizableOnDrag(true);
 
         JFXDrawer topDrawer = new JFXDrawer();
-        StackPane topDrawerPane = new StackPane();
+        topDrawerPane = new StackPane();
         topDrawerPane.getStyleClass().add("green-400");
         acceptB = new JFXButton();
         JFXButton acceptB = new JFXButton();
@@ -157,7 +159,6 @@ public class VideoController implements Initializable {
 
             }
         });
-        topDrawerPane.getChildren().add(acceptB);
         topDrawer.setDirection(JFXDrawer.DrawerDirection.TOP);
         topDrawer.setDefaultDrawerSize(150);
         topDrawer.setSidePane(topDrawerPane);
@@ -226,6 +227,8 @@ public class VideoController implements Initializable {
                     borderPane.setPrefSize(camWidth,camHeight);
                     bottomButton.setPrefSize(camWidth,camHeight/3);
                     topButton.setPrefSize(camWidth,camHeight/3);
+                    thisStage.setX(camWidth);
+                    thisStage.setY(camHeight);
                     cameraActive = true;
 
                     // capture video according to set 'timer' parameter
@@ -375,6 +378,7 @@ public class VideoController implements Initializable {
                                         Platform.runLater(new Runnable() {
                                             @Override
                                             public void run() {
+                                                topDrawerPane.getChildren().add(acceptB);
                                                 int camWidth  = bImageFromConvert.getWidth();
                                                 int camHeight = bImageFromConvert.getHeight();
 
