@@ -262,6 +262,7 @@ public class VideoController implements Initializable {
         Stage videoStage;
         ScheduledFuture<?> future;
         Socket socket;
+        public volatile boolean listen = false;
 
         public callReceiver(Socket socket)
         {
@@ -270,70 +271,66 @@ public class VideoController implements Initializable {
 
         @Override
         public Void call() {
-
-            //Runnable listen = new Runnable() {
-                //@Override
-                //public void run() {
+            listen = true;
+            while (listen) {
+                //TODO Debug
+                System.out.println("try start");
+                //TODO Debug
+                try (
+                        // IO streams
+                        ObjectOutputStream out_stream = new ObjectOutputStream(socket.getOutputStream());
+                        ObjectInputStream in_stream = new ObjectInputStream(socket.getInputStream());
+                ) {
                     //TODO Debug
-                    System.out.println("try start");
+                    System.out.println("try finish");
                     //TODO Debug
-                    try (
-                            // IO streams
-                            ObjectOutputStream out_stream = new ObjectOutputStream(socket.getOutputStream());
-                            ObjectInputStream in_stream  = new ObjectInputStream (socket.getInputStream ());
-                    ){
-                        //TODO Debug
-                        System.out.println("try finish");
-                        //TODO Debug
-                        ArrayList<Object> in_data;
-                        // This will result EOFException if there is no more data in the queue
-                        in_data  = (ArrayList<Object>)in_stream.readObject();
-                        int scenario = (Integer)in_data.get(0);
+                    ArrayList<Object> in_data;
+                    // This will result EOFException if there is no more data in the queue
+                    in_data = (ArrayList<Object>) in_stream.readObject();
+                    int scenario = (Integer) in_data.get(0);
 
-                        //TODO Remove debug
-                        System.out.println("Scenario:" + scenario);
-                        //TODO Remove debug
-
-                        if (scenario == RachaelUtil.CODE_CALL_REQUEST)
-                        {
-                            byte[] imageInByte = (byte[])in_data.get(1);
-                            InputStream in = new ByteArrayInputStream(imageInByte);
-                            BufferedImage bImageFromConvert = ImageIO.read(in);
+                    if (scenario == Session.CODE_CALL_REQUEST) {
+                        byte[] imageInByte = (byte[]) in_data.get(1);
+                        InputStream in = new ByteArrayInputStream(imageInByte);
+                        BufferedImage bImageFromConvert = ImageIO.read(in);
 
 
-
-
-                            Image jFX_image = SwingFXUtils.toFXImage(bImageFromConvert, null);
-                            Platform.runLater(new Runnable() {
-                                @Override public void run() { currentFrame.setImage(jFX_image); }
-                            });
-                        }
-                        else
-                        {
-                            System.out.println("THIS IS NOT A CALL REQUEST!");
-                        }
-
+                        Image jFX_image = SwingFXUtils.toFXImage(bImageFromConvert, null);
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                currentFrame.setImage(jFX_image);
+                            }
+                        });
                     }
-                    catch (SocketTimeoutException toe){toe.printStackTrace();}
-                    // Empty Stream, or it's ended
-                    // Assuming this is fine case
-                    catch (EOFException eofe){}
-                    catch (IOException ioe){ioe.printStackTrace(); }
-                    catch (ClassNotFoundException cnfe){cnfe.printStackTrace(); }
+                    else if (scenario == Session.CODE_ROLL_BACK_CALL_REQUEST)
+                    {
+                        Platform.runLater(new Runnable() {
+                            @Override public void run() { videoStage.hide(); }
+                        });
+                        break;
+                    }
+                    else {
+                        System.out.println("Unknown Request code");
+                    }
 
-
-
-                    //future.cancel(false);
-                //}
-            //};
-            //listen.run();
-            //executor = Executors.newSingleThreadScheduledExecutor();
-            //executor.scheduleAtFixedRate(listen, 0, 50, TimeUnit.MILLISECONDS);
-
+                } catch (SocketTimeoutException toe) {
+                    toe.printStackTrace();
+                }
+                // Empty Stream, or it's ended
+                // Assuming this is fine case
+                catch (EOFException eofe) {
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
+                } catch (ClassNotFoundException cnfe) {
+                    cnfe.printStackTrace();
+                }
+            }
 
             return null;
         }
-    }
+
+        }
 //----------------------------------------------------------------------------------------------------------------------
 
 

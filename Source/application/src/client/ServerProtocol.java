@@ -18,6 +18,9 @@ public class ServerProtocol {
     ObjectOutputStream out_stream;
     ObjectInputStream  in_stream;
 
+
+    private final int DEFAULT_SERVER_PORT = 3141;
+
     public ServerProtocol(String  serverHostName, Integer serverHostPort)
     {
         this.serverHostName = serverHostName;

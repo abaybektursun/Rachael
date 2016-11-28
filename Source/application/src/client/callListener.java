@@ -42,12 +42,13 @@ public class callListener extends Task {
 
                         Socket socket = serverSocket.accept();
                         System.out.println("Accept");
-                        videoControl.startCallReceiver(socket);
                         videoStage.show();
+                        videoControl.startCallReceiver(socket);
+
                         //future.cancel(false);
                     }
                     //catch(SocketException ex){/*System.out.println("Socket is closed");*/ex.printStackTrace();}
-                    catch(IOException ioex){ioex.printStackTrace();}
+                    catch(Exception ioex){ioex.printStackTrace();}
                 }
             };
             executor = Executors.newSingleThreadScheduledExecutor();
