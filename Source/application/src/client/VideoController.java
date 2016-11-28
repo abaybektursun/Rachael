@@ -628,7 +628,6 @@ public class VideoController implements Initializable {
                     } else {
                         System.out.println("Unknown Request code");
                     }
-
                 }
             }
             catch(EOFException eo){}
