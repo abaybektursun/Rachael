@@ -136,7 +136,7 @@ public class VideoController implements Initializable {
         topDrawerPane = new StackPane();
         topDrawerPane.getStyleClass().add("green-400");
         acceptB = new JFXButton();
-        JFXButton acceptB = new JFXButton();
+
         try {
             acceptB.setGraphic(new ImageView(new Image(new FileInputStream("img/phone_icon.png"))));
         } catch (FileNotFoundException e) {
