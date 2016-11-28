@@ -275,17 +275,14 @@ public class VideoController implements Initializable {
                             ObjectInputStream in_stream  = new ObjectInputStream (socket.getInputStream ());
                     ){
 
-                        //TODO! REMOVE THIS
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        //TODO! REMOVE THIS
                         ArrayList<Object> in_data;
                         // This will result EOFException if there is no more data in the queue
                         in_data  = (ArrayList<Object>)in_stream.readObject();
                         int scenario = (Integer)in_data.get(0);
+
+                        //TODO Remove debug
+                        System.out.println("");
+                        //TODO Remove debug
 
                         if (scenario == RachaelUtil.CODE_CALL_REQUEST)
                         {
@@ -298,7 +295,7 @@ public class VideoController implements Initializable {
                         else
                         {
                             System.out.println("THIS IS NOT A CALL REQUEST!");
-                         }
+                        }
 
                     }
                     catch (SocketTimeoutException toe){toe.printStackTrace();}

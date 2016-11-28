@@ -34,7 +34,6 @@ public class callListener extends Task {
         {
             ServerSocket serverSocket = new ServerSocket(session.getDefaultPort());
 
-            serverSocket.setSoTimeout(3000);
             Runnable listen = new Runnable() {
                 @Override
                 public void run() {
