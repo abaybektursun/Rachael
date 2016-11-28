@@ -247,7 +247,14 @@ public class VideoController implements Initializable {
     public void startCallReceiver(Socket socket)
     {
         callReceiver callReceiverTask = new callReceiver(socket);
+        //TODO Debug
+        System.out.println("callReceiverTask instance!");
+        //TODO Debug
         executionThreadPool.submit(callReceiverTask);
+
+        //TODO Debug
+        System.out.println("startCallReceiver is Done!");
+        //TODO Debug
     }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -269,19 +276,24 @@ public class VideoController implements Initializable {
             Runnable listen = new Runnable() {
                 @Override
                 public void run() {
+                    //TODO Debug
+                    System.out.println("try start");
+                    //TODO Debug
                     try (
                             // IO streams
                             ObjectOutputStream out_stream = new ObjectOutputStream(socket.getOutputStream());
                             ObjectInputStream in_stream  = new ObjectInputStream (socket.getInputStream ());
                     ){
-
+                        //TODO Debug
+                        System.out.println("try finish");
+                        //TODO Debug
                         ArrayList<Object> in_data;
                         // This will result EOFException if there is no more data in the queue
                         in_data  = (ArrayList<Object>)in_stream.readObject();
                         int scenario = (Integer)in_data.get(0);
 
                         //TODO Remove debug
-                        System.out.println("");
+                        System.out.println("Scenario:" + scenario);
                         //TODO Remove debug
 
                         if (scenario == RachaelUtil.CODE_CALL_REQUEST)
@@ -310,8 +322,9 @@ public class VideoController implements Initializable {
                     //future.cancel(false);
                 }
             };
-            executor = Executors.newSingleThreadScheduledExecutor();
-            executor.scheduleAtFixedRate(listen, 0, 50, TimeUnit.MILLISECONDS);
+            listen.run();
+            //executor = Executors.newSingleThreadScheduledExecutor();
+            //executor.scheduleAtFixedRate(listen, 0, 50, TimeUnit.MILLISECONDS);
 
 
             return null;

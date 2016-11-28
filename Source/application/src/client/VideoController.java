@@ -247,6 +247,9 @@ public class VideoController implements Initializable {
     public void startCallReceiver(Socket socket)
     {
         callReceiver callReceiverTask = new callReceiver(socket);
+        //TODO Debug
+        System.out.println("callReceiverTask instance!");
+        //TODO Debug
         executionThreadPool.submit(callReceiverTask);
 
         //TODO Debug
@@ -319,8 +322,9 @@ public class VideoController implements Initializable {
                     //future.cancel(false);
                 }
             };
-            executor = Executors.newSingleThreadScheduledExecutor();
-            executor.scheduleAtFixedRate(listen, 0, 50, TimeUnit.MILLISECONDS);
+            listen.run();
+            //executor = Executors.newSingleThreadScheduledExecutor();
+            //executor.scheduleAtFixedRate(listen, 0, 50, TimeUnit.MILLISECONDS);
 
 
             return null;

@@ -61,6 +61,10 @@ class callRequest extends Task {
                 out_data.add(singleFrame);
                 out_stream.writeObject(out_data);
 
+                // TODO Remove debug
+                System.out.println("Sent!");
+                // TODO Remove debug
+
                 out_stream.close();
                 in_stream.close();
                 socket.close();
