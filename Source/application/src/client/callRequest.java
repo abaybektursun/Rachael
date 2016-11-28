@@ -128,8 +128,11 @@ class callRequest extends Task {
                                 // Assuming this is fine case
                                 catch (EOFException eofe) {
                                 } catch (IOException ioe) {
-
                                     ioe.printStackTrace();
+                                    sendddd = false;
+                                    miniReceive = false;
+                                    capture.release();
+
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                     sendddd = false;

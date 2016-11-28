@@ -58,7 +58,7 @@ class callRequest extends Task {
 
                     Task request = new Task<Void>() {
                         @Override
-                        protected Void call() {
+                        protected Void call() throws IOException {
                             while (sendddd) {
                                 // Capture a frame from camera
                                 Mat frame = new Mat();
@@ -86,16 +86,9 @@ class callRequest extends Task {
                                 byte[] imageInByte = baos.toByteArray();
 
                                 out_data.add(imageInByte);
-                                try {
-                                    out_stream.writeObject(out_data);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                try {
-                                    baos.close();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
+                                out_stream.writeObject(out_data);
+                                baos.close();
+
 
                                 // TODO Remove debug
                                 System.out.println("Sent!");
@@ -136,8 +129,15 @@ class callRequest extends Task {
                                 catch (EOFException eofe) {
                                 } catch (IOException ioe) {
                                     ioe.printStackTrace();
+                                    sendddd = false;
+                                    miniReceive = false;
+                                    capture.release();
+
                                 } catch (Exception e) {
                                     e.printStackTrace();
+                                    sendddd = false;
+                                    miniReceive = false;
+                                    capture.release();
                                 }
 
                             }

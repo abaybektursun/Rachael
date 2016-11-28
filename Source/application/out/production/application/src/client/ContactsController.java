@@ -297,6 +297,7 @@ public class ContactsController implements Initializable {
                 @Override
                 public void handle(WindowEvent event) { event.consume(); videoStage.setIconified(true);}
             });
+            videoController.setThisStage(videoStage);
         } catch (Exception e) {
             e.printStackTrace();
         }
