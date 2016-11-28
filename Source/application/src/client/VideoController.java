@@ -284,7 +284,7 @@ public class VideoController implements Initializable {
                 while (listen) {
                     try {
                         //TODO Debug
-                        System.out.println("try finish");
+                        System.out.println("loop");
                         //TODO Debug
                         ArrayList<Object> in_data;
                         // This will result EOFException if there is no more data in the queue
@@ -325,11 +325,13 @@ public class VideoController implements Initializable {
             // Empty Stream, or it's ended
             // Assuming this is fine case
             catch (EOFException eofe) {
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-            } catch (ClassNotFoundException cnfe) {
-                cnfe.printStackTrace();
             }
+            catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+            /*catch (ClassNotFoundException cnfe) {
+                cnfe.printStackTrace();
+            }*/
 
 
             return null;
