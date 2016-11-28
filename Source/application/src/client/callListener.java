@@ -1,5 +1,6 @@
 package client;
 
+import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
@@ -42,7 +43,9 @@ public class callListener extends Task {
 
                         Socket socket = serverSocket.accept();
                         System.out.println("Accept");
-                        videoStage.show();
+                        Platform.runLater(new Runnable() {
+                            @Override public void run() { videoStage.show(); }
+                        });
                         videoControl.startCallReceiver(socket);
 
                         //future.cancel(false);
