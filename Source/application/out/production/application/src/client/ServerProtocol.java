@@ -53,7 +53,7 @@ public class ServerProtocol {
         abay.contacts.add(new Contact("John","Mccullough",0, 1,"0"));
         abay.contacts.add(new Contact("Frank","Arnold",   0, 2,"0"));
         abay.contacts.add(new Contact("Aria","Melendez",  1, 3,"192.168.1.111"));
-        abay.contacts.add(new Contact("Kiley","Maddox",   1, 4,"localhost"));
+        abay.contacts.add(new Contact("Kiley","Maddox",   1, 4,"192.168.1.105"));
         abay.contacts.add(new Contact("Alexa","Schmidt",  2, 5,"0"));
         abay.contacts.add(new Contact("Camryn","Kaiser",  2, 6,"0"));
         abay.contacts.add(new Contact("Veronica","Pace",  2, 7,"0"));
