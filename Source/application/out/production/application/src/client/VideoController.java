@@ -291,7 +291,7 @@ public class VideoController implements Initializable {
                                 out_data.add(session.NO_RESPONSE);
                                 try {
                                     out_stream.writeObject(out_data);
-                                } catch (IOException e) {
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }
