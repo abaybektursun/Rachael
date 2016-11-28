@@ -84,6 +84,7 @@ class callRequest extends Task {
                             int scenario = (Integer) in_data.get(0);
                             if(scenario == session.DECLINED)
                             {
+                                capture.release();
                                 break;
                             }
                         }
