@@ -284,6 +284,19 @@ public class VideoController implements Initializable {
                 boolean first_frame = true;
                 while (listen) {
                     try {
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                ArrayList<Object> out_data = new ArrayList<Object>();
+                                out_data.add(session.NO_RESPONSE);
+                                try {
+                                    out_stream.writeObject(out_data);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+
                         //TODO Debug
                         System.out.println("loop");
                         //TODO Debug
@@ -339,10 +352,6 @@ public class VideoController implements Initializable {
                         } else {
                             System.out.println("Unknown Request code");
                         }
-
-                        ArrayList<Object> out_data = new ArrayList<Object>();
-                        out_data.add(session.NO_RESPONSE);
-                        out_stream.writeObject(out_data);
 
                     }catch (Exception e){e.printStackTrace();}
                 }
