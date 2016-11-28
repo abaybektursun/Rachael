@@ -357,7 +357,7 @@ public class VideoController implements Initializable {
                         while (continListening) {
                             try {
                                 //TODO Debug
-                                System.out.println("loop");
+                                //System.out.println("loop");
                                 //TODO Debug
                                 ArrayList<Object> in_data;
                                 // This will result EOFException if there is no more data in the queue
@@ -541,10 +541,9 @@ public class VideoController implements Initializable {
 
     }
 //----------------------------------------------------------------------------------------------------------------------
-    public void startAcceptedResponseReciever(Socket socket)
+    public void startAcceptedResponseReciever(Socket socket, ObjectOutputStream out_stream, ObjectInputStream in_stream)
     {
-
-        AcceptedResponseReceiver AcceptedResponseRecieverTask = new AcceptedResponseReceiver(socket);
+        AcceptedResponseReceiver AcceptedResponseRecieverTask = new AcceptedResponseReceiver(socket, out_stream, in_stream);
         //TODO Debug
         System.out.println("AcceptedResponse Reciever instance!");
         //TODO Debug
@@ -556,14 +555,105 @@ public class VideoController implements Initializable {
     public class AcceptedResponseReceiver extends Task
     {
         Socket socket;
-        public AcceptedResponseReceiver(Socket socket)
+        ObjectOutputStream out_stream;
+        ObjectInputStream in_stream;
+
+        public AcceptedResponseReceiver(Socket socket, ObjectOutputStream out_stream, ObjectInputStream in_stream)
         {
             this.socket = socket;
+            this.out_stream = out_stream;
+            this.in_stream = in_stream;
         }
 
         @Override
         public Void call() {
+            try {
+                callAcceptedOut = true;
+                boolean first_frame = true;
+                while (callAcceptedOut) {
+                    ArrayList<Object> in_data;
+                    // This will result EOFException if there is no more data in the queue
+                    in_data = (ArrayList<Object>) in_stream.readObject();
+                    int scenario = (Integer) in_data.get(0);
 
+                    if (scenario == Session.CODE_ACCEPTED_FRAME) {
+                        byte[] imageInByte = (byte[]) in_data.get(1);
+                        InputStream in = new ByteArrayInputStream(imageInByte);
+                        BufferedImage bImageFromConvert = ImageIO.read(in);
+
+                        Image jFX_image = SwingFXUtils.toFXImage(bImageFromConvert, null);
+
+                        if (first_frame) {
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    int camWidth = bImageFromConvert.getWidth();
+                                    int camHeight = bImageFromConvert.getHeight();
+
+                                    drawersStack.setPrefSize(camWidth, camHeight);
+                                    currentFrame.setFitHeight(camHeight);
+                                    currentFrame.setFitWidth(camWidth);
+                                    mainPane.setPrefSize(camWidth, camHeight);
+                                    borderPane.setPrefSize(camWidth, camHeight);
+                                    bottomButton.setPrefSize(camWidth, camHeight / 3);
+                                    topButton.setPrefSize(camWidth, camHeight / 3);
+                                }
+                            });
+                            first_frame = false;
+                        }
+
+
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                currentFrame.setImage(jFX_image);
+                            }
+                        });
+
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                currentFrame.setImage(jFX_image);
+                            }
+                        });
+                    } else if (scenario == Session.CODE_ROLL_BACK_CALL_REQUEST) {
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                thisStage.hide();
+                            }
+                        });
+                        callAcceptedOut = false;
+                        break;
+                    } else {
+                        System.out.println("Unknown Request code");
+                    }
+
+                }
+            }
+            catch(EOFException eo){}
+            catch (IOException ioe){
+                callAcceptedOut = false;
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        thisStage.hide();
+                    }
+                });
+
+                ioe.printStackTrace();
+            }
+            catch (ClassNotFoundException cnfe)
+            {
+                callAcceptedOut = false;
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        thisStage.hide();
+                    }
+                });
+                cnfe.printStackTrace();
+            }
             return null;
         }
     }
