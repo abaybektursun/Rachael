@@ -77,7 +77,7 @@ class callRequest extends Task {
 
 
                                 ArrayList<Object> out_data = new ArrayList<Object>();
-                                out_data.add(session.CODE_CALL_REQUEST);
+                                out_data.add(Session.CODE_CALL_REQUEST);
 
                                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                                 try {
@@ -127,7 +127,6 @@ class callRequest extends Task {
                                                 videoStage.show();
                                             }
                                         });
-
                                         videoControl.startAcceptedResponseReciever(socket, out_stream, in_stream);
 
 
