@@ -13,19 +13,18 @@ public class Session implements Serializable {
     private int     status;
     private boolean callAccepted;
 
-    public final int OFFLINE = 0;
-    public final int AVAILABLE = 1;
-    public final int BUSY = 2;
+    public static final int OFFLINE = 0;
+    public static final int AVAILABLE = 1;
+    public static final int BUSY = 2;
 
     public static final int CODE_CALL_REQUEST = 44;
     public static final int CODE_ROLL_BACK_CALL_REQUEST = 43;
 
     public static final int CODE_ACCEPTED_FRAME = 46;
 
-
-    public final int NO_RESPONSE = 10;
-    public final int ACCEPTED    = 12;
-    public final int DECLINED    = 23;
+    public static final int NO_RESPONSE = 10;
+    public static final int ACCEPTED    = 12;
+    public static final int DECLINED    = 23;
 
 
     public ArrayList<Contact> contacts;
