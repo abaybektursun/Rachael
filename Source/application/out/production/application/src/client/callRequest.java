@@ -19,7 +19,7 @@ class callRequest extends Task {
     String IP;
     Session session;
     public volatile boolean sendddd = false;
-    public volatile boolean receiveeee = false;
+    public volatile boolean miniReceive = false;
 
     ExecutorService executionThreadPool;
 
@@ -47,7 +47,7 @@ class callRequest extends Task {
 
         if (capture.isOpened()) {
             sendddd = true;
-            receiveeee = true;
+            miniReceive = true;
             boolean connected = false;
             try (
                     Socket socket = new Socket(IP, session.getDefaultPort());
@@ -110,35 +110,38 @@ class callRequest extends Task {
                     };
                     executionThreadPool.submit(request);
 
-                    Task respond = new Task<Void>() {
+                    Task miniListen = new Task<Void>() {
                         @Override
                         protected Void call() {
-                            try{
-                                ArrayList<Object> in_data;
-                                // This will result EOFException if there is no more data in the queue
-                                in_data = (ArrayList<Object>) in_stream.readObject();
-                                int scenario = (Integer) in_data.get(0);
-                                if(scenario == session.DECLINED)
-                                {
-                                    capture.release();
-                                    sendddd = false;
+                            while (sendddd) {
+                                try {
+                                    ArrayList<Object> in_data;
+                                    // This will result EOFException if there is no more data in the queue
+                                    in_data = (ArrayList<Object>) in_stream.readObject();
+                                    int scenario = (Integer) in_data.get(0);
+                                    if (scenario == session.DECLINED) {
+                                        capture.release();
+                                        sendddd = false;
+                                        miniReceive = false;
+                                    }
+                                } catch (SocketTimeoutException toe) {
+                                    toe.printStackTrace();
                                 }
+                                // Empty Stream, or it's ended
+                                // Assuming this is fine case
+                                catch (EOFException eofe) {
+                                } catch (IOException ioe) {
+                                    ioe.printStackTrace();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
                             }
-                            catch (SocketTimeoutException toe) {
-                                toe.printStackTrace();
-                            }
-                            // Empty Stream, or it's ended
-                            // Assuming this is fine case
-                            catch (EOFException eofe) {
-                            }
-                            catch (IOException ioe) {
-                                ioe.printStackTrace();
-                            }
-                            catch (Exception e){e.printStackTrace();}
                             return null;
                         }
                     };
-                    executionThreadPool.submit(respond);
+
+                    executionThreadPool.submit(miniListen);
 
 
 
