@@ -13,7 +13,6 @@ import java.util.concurrent.*;
 
 public class callListener extends Task {
     Session session;
-    ScheduledExecutorService executor;
     Stage videoStage;
     VideoController videoControl;
     static ScheduledFuture<?> future;

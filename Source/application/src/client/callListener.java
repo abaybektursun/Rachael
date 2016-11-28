@@ -13,7 +13,6 @@ import java.util.concurrent.*;
 
 public class callListener extends Task {
     Session session;
-    ScheduledExecutorService executor;
     Stage videoStage;
     VideoController videoControl;
     static ScheduledFuture<?> future;
@@ -37,7 +36,7 @@ public class callListener extends Task {
             Task startListen = new Task<Void>() {
                 @Override
                 protected Void call() {
-                    listening = false;
+                    listening = true;
                     while (listening) {
 
                         try {

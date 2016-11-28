@@ -35,11 +35,6 @@ class callRequest extends Task {
     @Override
     public Void call()
     {
-        FileInputStream fis = null;
-        BufferedInputStream bis = null;
-        OutputStream os = null;
-        //Socket socket;
-
         // the OpenCV object that realizes the video capture
         VideoCapture capture = new VideoCapture();
         // start the default video cam
