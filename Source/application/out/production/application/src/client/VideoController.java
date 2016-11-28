@@ -227,8 +227,10 @@ public class VideoController implements Initializable {
                     borderPane.setPrefSize(camWidth,camHeight);
                     bottomButton.setPrefSize(camWidth,camHeight/3);
                     topButton.setPrefSize(camWidth,camHeight/3);
-                    thisStage.setX(camWidth);
-                    thisStage.setY(camHeight);
+                    //thisStage.setX(camWidth);
+                    //thisStage.setY(camHeight);
+                    thisStage.setWidth(camWidth);
+                    thisStage.setHeight(camHeight);
                     cameraActive = true;
 
                     // capture video according to set 'timer' parameter
