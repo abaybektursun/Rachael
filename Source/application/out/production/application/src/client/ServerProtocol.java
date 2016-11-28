@@ -1,5 +1,6 @@
 package client;
 
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import java.io.ObjectOutputStream;
@@ -68,8 +69,6 @@ public class ServerProtocol {
         }catch (Exception exc){exc.printStackTrace();}
     }
 
-
-
     public void updateStatus(int status)
     {
         ArrayList<Object> out_data = new ArrayList<Object>();
@@ -80,6 +79,18 @@ public class ServerProtocol {
             out_stream.writeObject(out_data);
         }catch (Exception exc){exc.printStackTrace();}
     }
+
+    public void sendFace(BufferedImage faceFrame)
+    {
+        ArrayList<Object> out_data = new ArrayList<Object>();
+        //TODO! Correct the request code
+        out_data.add(-999);
+        out_data.add(faceFrame);
+        try {
+            out_stream.writeObject(out_data);
+        }catch (Exception exc){exc.printStackTrace();}
+    }
+
 
     public void closeServerConnection()
     {

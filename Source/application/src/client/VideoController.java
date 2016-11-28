@@ -290,7 +290,7 @@ public class VideoController implements Initializable {
                         else
                         {
                             System.out.println("THIS IS NOT A CALL REQUEST!");
-                        }
+             git            }
 
                     }
                     catch (SocketTimeoutException toe){toe.printStackTrace();}
