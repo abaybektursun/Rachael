@@ -282,39 +282,41 @@ public class VideoController implements Initializable {
                     ObjectInputStream in_stream = new ObjectInputStream(socket.getInputStream());
             ) {
                 while (listen) {
-                    //TODO Debug
-                    System.out.println("try finish");
-                    //TODO Debug
-                    ArrayList<Object> in_data;
-                    // This will result EOFException if there is no more data in the queue
-                    in_data = (ArrayList<Object>) in_stream.readObject();
-                    int scenario = (Integer) in_data.get(0);
+                    try {
+                        //TODO Debug
+                        System.out.println("loop");
+                        //TODO Debug
+                        ArrayList<Object> in_data;
+                        // This will result EOFException if there is no more data in the queue
+                        in_data = (ArrayList<Object>) in_stream.readObject();
+                        int scenario = (Integer) in_data.get(0);
 
-                    if (scenario == Session.CODE_CALL_REQUEST) {
-                        byte[] imageInByte = (byte[]) in_data.get(1);
-                        InputStream in = new ByteArrayInputStream(imageInByte);
-                        BufferedImage bImageFromConvert = ImageIO.read(in);
+                        if (scenario == Session.CODE_CALL_REQUEST) {
+                            byte[] imageInByte = (byte[]) in_data.get(1);
+                            InputStream in = new ByteArrayInputStream(imageInByte);
+                            BufferedImage bImageFromConvert = ImageIO.read(in);
 
 
-                        Image jFX_image = SwingFXUtils.toFXImage(bImageFromConvert, null);
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                currentFrame.setImage(jFX_image);
-                            }
-                        });
-                    } else if (scenario == Session.CODE_ROLL_BACK_CALL_REQUEST) {
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                videoStage.hide();
-                            }
-                        });
-                        listen = false;
-                        break;
-                    } else {
-                        System.out.println("Unknown Request code");
-                    }
+                            Image jFX_image = SwingFXUtils.toFXImage(bImageFromConvert, null);
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    currentFrame.setImage(jFX_image);
+                                }
+                            });
+                        } else if (scenario == Session.CODE_ROLL_BACK_CALL_REQUEST) {
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    videoStage.hide();
+                                }
+                            });
+                            listen = false;
+                            break;
+                        } else {
+                            System.out.println("Unknown Request code");
+                        }
+                    }catch (Exception e){e.printStackTrace();}
                 }
 
             } catch (SocketTimeoutException toe) {
@@ -323,11 +325,13 @@ public class VideoController implements Initializable {
             // Empty Stream, or it's ended
             // Assuming this is fine case
             catch (EOFException eofe) {
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-            } catch (ClassNotFoundException cnfe) {
-                cnfe.printStackTrace();
             }
+            catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+            /*catch (ClassNotFoundException cnfe) {
+                cnfe.printStackTrace();
+            }*/
 
 
             return null;
