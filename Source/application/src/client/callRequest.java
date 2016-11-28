@@ -21,6 +21,7 @@ class callRequest extends Task {
     Session session;
     public volatile boolean sendddd = false;
     public volatile boolean miniReceive = false;
+    public volatile boolean callAcceptedOut = false;
 
     ExecutorService executionThreadPool;
 
@@ -151,6 +152,7 @@ class callRequest extends Task {
                     {
                         //wait
                     }
+                    //while()
 
                 }
                 catch (SocketException se){

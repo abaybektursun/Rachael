@@ -60,6 +60,7 @@ public class VideoController implements Initializable {
 
     ExecutorService executionThreadPool;
     volatile boolean cameraActive = false;
+    public volatile boolean callAcceptedIn = false;
 
     // the OpenCV object that realizes the video capture
     private VideoCapture capture = new VideoCapture();
@@ -98,9 +99,15 @@ public class VideoController implements Initializable {
         cancelB.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 miniResponding = false;
+                callAcceptedIn = false;
+                //----------------------------------------------------
                 Platform.runLater(new Runnable() {
-                    @Override public void run() { mediaPlayer.stop(); thisStage.hide();}
+                    @Override public void run() {
+
+                        mediaPlayer.stop();
+                        thisStage.hide();}
                 });
+                //----------------------------------------------------
 
             }
         });
@@ -131,6 +138,21 @@ public class VideoController implements Initializable {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+        //
+        acceptB.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                callAcceptedIn = true;
+                miniResponding = false;
+                //------------------------------------------------
+                Platform.runLater(new Runnable() {
+                    @Override public void run() {
+                        mediaPlayer.stop();
+                    }
+                });
+                //------------------------------------------------
+
+            }
+        });
         topDrawerPane.getChildren().add(acceptB);
         topDrawer.setDirection(JFXDrawer.DrawerDirection.TOP);
         topDrawer.setDefaultDrawerSize(150);
@@ -360,6 +382,11 @@ public class VideoController implements Initializable {
                                                 bottomButton.setPrefSize(camWidth, camHeight / 3);
                                                 topButton.setPrefSize(camWidth, camHeight / 3);
                                                 mediaPlayer = new MediaPlayer(sound);
+                                                mediaPlayer.setOnEndOfMedia(new Runnable() {
+                                                    public void run() {
+                                                        mediaPlayer.seek(Duration.ZERO);
+                                                    }
+                                                });
                                                 mediaPlayer.play();
                                             }
                                         });
@@ -414,6 +441,10 @@ public class VideoController implements Initializable {
                 executionThreadPool.submit(miniRespond);
 
                 while (continListening && miniResponding)
+                {
+                    //wait
+                }
+                while (callAcceptedIn)
                 {
                     //wait
                 }
