@@ -110,13 +110,13 @@ class callRequest extends Task {
                                     // This will result EOFException if there is no more data in the queue
                                     in_data = (ArrayList<Object>) in_stream.readObject();
                                     int scenario = (Integer) in_data.get(0);
-                                    if (scenario == session.DECLINED) {
+                                    if (scenario == Session.DECLINED) {
                                         capture.release();
                                         sendddd = false;
                                         miniReceive = false;
                                         break;
                                     }
-                                    else if(scenario == session.ACCEPTED)
+                                    else if(scenario == Session.ACCEPTED)
                                     {
                                         miniReceive = false;
                                         callAcceptedOut = true;
@@ -171,7 +171,10 @@ class callRequest extends Task {
                     {
                         //wait
                     }
-                    //while()
+                    while(callAcceptedOut)
+                    {
+                        //wait
+                    }
 
                 }
                 catch (SocketException se){
