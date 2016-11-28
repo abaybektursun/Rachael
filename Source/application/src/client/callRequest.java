@@ -78,7 +78,7 @@ class callRequest extends Task {
                         System.out.println("Sent!");
                         // TODO Remove debug
 
-                        /*try{
+                        try{
                             ArrayList<Object> in_data;
                             // This will result EOFException if there is no more data in the queue
                             in_data = (ArrayList<Object>) in_stream.readObject();
@@ -98,7 +98,7 @@ class callRequest extends Task {
                         }
                         catch (IOException ioe) {
                             ioe.printStackTrace();
-                        }*/
+                        }
                     }
                 }
                 catch (Exception cnfe) {
