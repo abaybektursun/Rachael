@@ -58,6 +58,9 @@ public class VideoController implements Initializable {
     StackPane bottomDrawerPane;
     StackPane topDrawerPane;
 
+    private double xOffset = 0;
+    private double yOffset = 0;
+
     ServerProtocol server;
     Session session;
 
@@ -79,6 +82,23 @@ public class VideoController implements Initializable {
         executionThreadPool = Executors.newCachedThreadPool();
         initDrawers();
         sound = new Media(new File("audio/Triton.mp3").toURI().toString());
+
+        currentFrame.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                xOffset = event.getSceneX();
+                yOffset = event.getSceneY();
+            }
+        });
+        currentFrame.setOnMouseDragged(
+                new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        thisStage.setX(event.getScreenX() - xOffset);
+                        thisStage.setY(event.getScreenY() - yOffset);
+                    }
+                }
+        );
 
     }
 
