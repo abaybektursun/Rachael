@@ -59,6 +59,7 @@ public class Client extends Application {
         //FDthread.runnable = true;
         //fdt.start();
 
+        //server = new ServerProtocol("192.168.1.103",3141);
         server = new ServerProtocol();
         thisSession = server.tempSession();
 

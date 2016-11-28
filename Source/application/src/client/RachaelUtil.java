@@ -12,6 +12,8 @@ class RachaelUtil {
     private final int ACCEPTED    = 1;
     private final int DECLINED    = 2;
 
+    private final int DEFAULT_SERVER_PORT = 3141;
+
     public static BufferedImage Mat2BufferedImage(Mat matrix){
 
         int channelType = BufferedImage.TYPE_BYTE_GRAY;
