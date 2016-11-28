@@ -217,8 +217,8 @@ public class VideoController implements Initializable {
 
                             Platform.runLater(new Runnable() {
                                 @Override public void run() { currentFrame.setImage(jFX_image);
-                                mediaPlayer = new MediaPlayer(sound);
-                                mediaPlayer.play();}
+
+                                }
 
                             });
 
@@ -343,9 +343,7 @@ public class VideoController implements Initializable {
                                     InputStream in = new ByteArrayInputStream(imageInByte);
                                     BufferedImage bImageFromConvert = ImageIO.read(in);
 
-
                                     Image jFX_image = SwingFXUtils.toFXImage(bImageFromConvert, null);
-
 
                                     if (first_frame) {
                                         Platform.runLater(new Runnable() {
@@ -361,6 +359,8 @@ public class VideoController implements Initializable {
                                                 borderPane.setPrefSize(camWidth, camHeight);
                                                 bottomButton.setPrefSize(camWidth, camHeight / 3);
                                                 topButton.setPrefSize(camWidth, camHeight / 3);
+                                                mediaPlayer = new MediaPlayer(sound);
+                                                mediaPlayer.play();
                                             }
                                         });
                                         first_frame = false;
