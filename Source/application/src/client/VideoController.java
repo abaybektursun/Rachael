@@ -98,9 +98,9 @@ public class VideoController implements Initializable {
         cancelB.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 miniResponding = false;
-
-                mediaPlayer.stop();
-                thisStage.hide();
+                Platform.runLater(new Runnable() {
+                    @Override public void run() { mediaPlayer.stop(); thisStage.hide();}
+                });
 
             }
         });
@@ -216,13 +216,12 @@ public class VideoController implements Initializable {
                             Image jFX_image = SwingFXUtils.toFXImage(stdBuffImage, null);
 
                             Platform.runLater(new Runnable() {
-                                @Override public void run() { currentFrame.setImage(jFX_image); }
+                                @Override public void run() { currentFrame.setImage(jFX_image);
+                                mediaPlayer = new MediaPlayer(sound);
+                                mediaPlayer.play();}
+
                             });
 
-                            try {
-                                mediaPlayer = new MediaPlayer(sound);
-                                mediaPlayer.play();
-                            }catch (Exception e){e.printStackTrace();}
                         }
                     };
 

@@ -74,8 +74,7 @@ public class VideoController implements Initializable {
         executionThreadPool = Executors.newCachedThreadPool();
         initDrawers();
         sound = new Media(new File("audio/Triton.mp3").toURI().toString());
-        mediaPlayer = new MediaPlayer(sound);
-        mediaPlayer.play();
+
     }
 
     private void initDrawers(){
@@ -220,8 +219,10 @@ public class VideoController implements Initializable {
                                 @Override public void run() { currentFrame.setImage(jFX_image); }
                             });
 
-                            mediaPlayer = new MediaPlayer(sound);
-                            mediaPlayer.play();
+                            try {
+                                mediaPlayer = new MediaPlayer(sound);
+                                mediaPlayer.play();
+                            }catch (Exception e){e.printStackTrace();}
                         }
                     };
 
