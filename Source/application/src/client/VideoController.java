@@ -281,6 +281,7 @@ public class VideoController implements Initializable {
                     ObjectOutputStream out_stream = new ObjectOutputStream(socket.getOutputStream());
                     ObjectInputStream in_stream = new ObjectInputStream(socket.getInputStream());
             ) {
+                boolean first_frame = true;
                 while (listen) {
                     try {
                         //TODO Debug
@@ -298,6 +299,28 @@ public class VideoController implements Initializable {
 
 
                             Image jFX_image = SwingFXUtils.toFXImage(bImageFromConvert, null);
+
+
+                            if (first_frame) {
+                                Platform.runLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        int camWidth  = bImageFromConvert.getWidth();
+                                        int camHeight = bImageFromConvert.getHeight();
+
+                                        drawersStack.setPrefSize(camWidth, camHeight);
+                                        currentFrame.setFitHeight(camHeight);
+                                        currentFrame.setFitWidth(camWidth);
+                                        mainPane.setPrefSize(camWidth, camHeight);
+                                        borderPane.setPrefSize(camWidth, camHeight);
+                                        bottomButton.setPrefSize(camWidth, camHeight / 3);
+                                        topButton.setPrefSize(camWidth, camHeight / 3);
+                                    }
+                                });
+                                first_frame = false;
+                            }
+
+
                             Platform.runLater(new Runnable() {
                                 @Override
                                 public void run() {
