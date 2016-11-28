@@ -274,6 +274,14 @@ public class VideoController implements Initializable {
                             ObjectOutputStream out_stream = new ObjectOutputStream(socket.getOutputStream());
                             ObjectInputStream in_stream  = new ObjectInputStream (socket.getInputStream ());
                     ){
+
+                        //TODO! REMOVE THIS
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        //TODO! REMOVE THIS
                         ArrayList<Object> in_data;
                         // This will result EOFException if there is no more data in the queue
                         in_data  = (ArrayList<Object>)in_stream.readObject();

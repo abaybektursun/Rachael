@@ -29,22 +29,30 @@ public class callListener extends Task {
 
     @Override
     public Void call() {
-        try ( ServerSocket serverSocket = new ServerSocket(session.getDefaultPort()) ) {
+
+        try
+        {
+            ServerSocket serverSocket = new ServerSocket(session.getDefaultPort());
+
+            serverSocket.setSoTimeout(3000);
             Runnable listen = new Runnable() {
                 @Override
                 public void run() {
+
                     try {
+
                         Socket socket = serverSocket.accept();
+                        System.out.println("Accept");
                         videoControl.startCallReceiver(socket);
                         videoStage.show();
-                        future.cancel(false);
+                        //future.cancel(false);
                     }
-                    catch(SocketException ex){System.out.println("Socket is closed");}
+                    //catch(SocketException ex){/*System.out.println("Socket is closed");*/ex.printStackTrace();}
                     catch(IOException ioex){ioex.printStackTrace();}
                 }
             };
             executor = Executors.newSingleThreadScheduledExecutor();
-            executor.scheduleAtFixedRate(listen, 0, 50, TimeUnit.MILLISECONDS);
+            executor.scheduleAtFixedRate(listen, 0, 1, TimeUnit.SECONDS);
         }
         catch (Exception e) {
             System.err.println("Could not start the server on port: " + session.getDefaultPort());
