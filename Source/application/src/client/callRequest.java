@@ -99,6 +99,7 @@ class callRequest extends Task {
                         catch (IOException ioe) {
                             ioe.printStackTrace();
                         }
+                        catch (Exception e){e.printStackTrace();}
                     }
                 }
                 catch (Exception cnfe) {
