@@ -339,6 +339,11 @@ public class VideoController implements Initializable {
                         } else {
                             System.out.println("Unknown Request code");
                         }
+
+                        ArrayList<Object> out_data = new ArrayList<Object>();
+                        out_data.add(session.NO_RESPONSE);
+                        out_stream.writeObject(out_data);
+
                     }catch (Exception e){e.printStackTrace();}
                 }
 
