@@ -24,6 +24,7 @@ import javafx.event.ActionEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 
 import java.io.*;
 import java.net.DatagramPacket;
@@ -281,7 +282,7 @@ public class ContactsController implements Initializable {
             videoController.initServices();
             videoStage = new Stage();
             //videoStage.initModality(Modality.WINDOW_MODAL);
-            videoStage.setTitle("Video Chat");
+           // videoStage.setTitle("Video Chat");
             final Scene videoScene = new Scene(videoRoot);
             // Load the style sheet
             videoScene.getStylesheets().add(getClass().getResource("jfoenix-components.css").toExternalForm());
@@ -289,8 +290,12 @@ public class ContactsController implements Initializable {
             videoScene.setFill(Color.TRANSPARENT);
             videoStage.setScene(videoScene);
             //videoStage.setResizable(false);
-            videoStage.initStyle(StageStyle.TRANSPARENT);
+            videoStage.initStyle(StageStyle.UTILITY);
             //videoStage.show();
+            videoStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent event) { event.consume(); videoStage.setIconified(true);}
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }

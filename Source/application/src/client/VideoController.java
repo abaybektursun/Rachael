@@ -25,6 +25,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -78,7 +79,7 @@ public class VideoController implements Initializable {
 
         JFXDrawer bottomDrawer = new JFXDrawer();
         StackPane bottomDrawerPane = new StackPane();
-        bottomDrawerPane.getStyleClass().add("deep-purple-400");
+        bottomDrawerPane.getStyleClass().add("red-400");
         bottomDrawerPane.getChildren().add(new JFXButton("Bottom Content"));
         bottomDrawer.setDefaultDrawerSize(150);
         bottomDrawer.setDirection(JFXDrawer.DrawerDirection.BOTTOM);
@@ -346,7 +347,8 @@ public class VideoController implements Initializable {
                                     System.out.println("Unknown Request code");
                                 }
 
-                            }catch (EOFException eo){eo.printStackTrace();}
+                            }catch (EOFException eo){}
+                             catch (SocketException se){se.printStackTrace(); continListening=false; responding=false;}
                              catch (Exception e){e.printStackTrace();}
                         }
                         return null;

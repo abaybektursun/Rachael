@@ -108,7 +108,7 @@ class callRequest extends Task {
                     Task miniListen = new Task<Void>() {
                         @Override
                         protected Void call() {
-                            while (sendddd) {
+                            while (miniReceive) {
                                 try {
                                     ArrayList<Object> in_data;
                                     // This will result EOFException if there is no more data in the queue
@@ -137,6 +137,11 @@ class callRequest extends Task {
                     };
 
                     executionThreadPool.submit(miniListen);
+
+                    while (sendddd && miniReceive)
+                    {
+                        //wait
+                    }
 
 
 
