@@ -271,12 +271,7 @@ public class VideoController implements Initializable {
         @Override
         public Void call() {
             continListening = true;
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
+            responding = true;
             //TODO Debug
             System.out.println("try start");
             //TODO Debug

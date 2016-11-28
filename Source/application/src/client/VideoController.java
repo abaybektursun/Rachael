@@ -346,7 +346,8 @@ public class VideoController implements Initializable {
                                     System.out.println("Unknown Request code");
                                 }
 
-                            }catch (Exception e){e.printStackTrace();}
+                            }catch (EOFException eo){eo.printStackTrace();}
+                             catch (Exception e){e.printStackTrace();}
                         }
                         return null;
                     }
