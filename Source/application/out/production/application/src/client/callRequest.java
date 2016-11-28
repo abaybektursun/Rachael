@@ -121,6 +121,15 @@ class callRequest extends Task {
                                         miniReceive = false;
                                         callAcceptedOut = true;
 
+                                        Platform.runLater(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                videoStage.show();
+                                            }
+                                        });
+                                        videoControl.startAcceptedResponseReciever(socket);
+
+
 
                                         break;
                                     }

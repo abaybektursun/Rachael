@@ -541,5 +541,31 @@ public class VideoController implements Initializable {
 
     }
 //----------------------------------------------------------------------------------------------------------------------
+    public void startAcceptedResponseReciever(Socket socket)
+    {
+
+        AcceptedResponseReceiver AcceptedResponseRecieverTask = new AcceptedResponseReceiver(socket);
+        //TODO Debug
+        System.out.println("AcceptedResponse Reciever instance!");
+        //TODO Debug
+        executionThreadPool.submit(AcceptedResponseRecieverTask);
+        //TODO Debug
+        System.out.println("executionThreadPool AcceptedResponse Reciever is Done!");
+        //TODO Debug
+    }
+    public class AcceptedResponseReceiver extends Task
+    {
+        Socket socket;
+        public AcceptedResponseReceiver(Socket socket)
+        {
+            this.socket = socket;
+        }
+
+        @Override
+        public Void call() {
+
+            return null;
+        }
+    }
 
 }

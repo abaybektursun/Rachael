@@ -127,7 +127,8 @@ class callRequest extends Task {
                                                 videoStage.show();
                                             }
                                         });
-                                        videoControl.startCallReceiver(socket);
+
+                                        videoControl.startAcceptedResponseReciever(socket, out_stream, in_stream);
 
 
 
