@@ -6,12 +6,16 @@ import com.jfoenix.controls.JFXDrawersStack;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
@@ -47,6 +51,8 @@ public class VideoController implements Initializable {
     private JFXButton bottomButton;
 
     JFXButton acceptB;
+    Media sound;
+    MediaPlayer mediaPlayer;
 
     ServerProtocol server;
     Session session;
@@ -58,6 +64,7 @@ public class VideoController implements Initializable {
     private VideoCapture capture = new VideoCapture();
     // a timer for acquiring the video stream
     private ScheduledExecutorService timer;
+    public volatile boolean miniResponding = false;
 
     private final int shadowSize = 50;
 
@@ -85,6 +92,12 @@ public class VideoController implements Initializable {
         bottomDrawerPane.getStyleClass().add("red-400");
         JFXButton cancelB = new JFXButton("Cancel Call");
         cancelB.setTextFill(Paint.valueOf("white"));
+        cancelB.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                miniResponding = false;
+                mediaPlayer.stop();
+            }
+        });
         bottomDrawerPane.getChildren().add(cancelB);
         bottomDrawer.setDefaultDrawerSize(150);
         bottomDrawer.setDirection(JFXDrawer.DrawerDirection.BOTTOM);
@@ -194,6 +207,10 @@ public class VideoController implements Initializable {
                             Platform.runLater(new Runnable() {
                                 @Override public void run() { currentFrame.setImage(jFX_image); }
                             });
+
+                            sound = new Media(new File("audio/Triton.mp3").toURI().toString());
+                            mediaPlayer = new MediaPlayer(sound);
+                            mediaPlayer.play();
                         }
                     };
 
@@ -274,7 +291,7 @@ public class VideoController implements Initializable {
         ScheduledFuture<?> future;
         Socket socket;
         public volatile boolean continListening = false;
-        public volatile boolean responding = false;
+
 
         public callReceiver(Socket socket)
         {
@@ -284,7 +301,7 @@ public class VideoController implements Initializable {
         @Override
         public Void call() {
             continListening = true;
-            responding = true;
+            miniResponding = true;
             //TODO Debug
             System.out.println("try start");
             //TODO Debug
@@ -353,14 +370,14 @@ public class VideoController implements Initializable {
                                         }
                                     });
                                     continListening = false;
-                                    responding=false;
+                                    miniResponding=false;
                                     break;
                                 } else {
                                     System.out.println("Unknown Request code");
                                 }
 
                             }catch (EOFException eo){}
-                             catch (SocketException se){se.printStackTrace(); continListening=false; responding=false;}
+                             catch (SocketException se){se.printStackTrace(); continListening=false; miniResponding=false;}
                              catch (Exception e){e.printStackTrace();}
                         }
                         return null;
@@ -371,7 +388,7 @@ public class VideoController implements Initializable {
                 Task miniRespond = new Task<Void>() {
                     @Override
                     protected Void call() {
-                        while(responding) {
+                        while(miniResponding) {
                             ArrayList<Object> out_data = new ArrayList<Object>();
                             out_data.add(session.NO_RESPONSE);
                             try {
@@ -385,7 +402,7 @@ public class VideoController implements Initializable {
                 };
                 executionThreadPool.submit(miniRespond);
 
-                while (continListening && responding)
+                while (continListening && miniResponding)
                 {
                     //wait
                 }
