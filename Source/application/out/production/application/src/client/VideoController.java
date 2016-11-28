@@ -53,6 +53,7 @@ public class VideoController implements Initializable {
     JFXButton acceptB;
     Media sound;
     MediaPlayer mediaPlayer;
+    Stage thisStage;
 
     ServerProtocol server;
     Session session;
@@ -72,6 +73,9 @@ public class VideoController implements Initializable {
     public void initialize(URL url, ResourceBundle rb){
         executionThreadPool = Executors.newCachedThreadPool();
         initDrawers();
+        sound = new Media(new File("audio/Triton.mp3").toURI().toString());
+        mediaPlayer = new MediaPlayer(sound);
+        mediaPlayer.play();
     }
 
     private void initDrawers(){
@@ -95,7 +99,10 @@ public class VideoController implements Initializable {
         cancelB.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 miniResponding = false;
+
                 mediaPlayer.stop();
+                thisStage.hide();
+
             }
         });
         bottomDrawerPane.getChildren().add(cancelB);
@@ -144,6 +151,11 @@ public class VideoController implements Initializable {
         topButton.addEventHandler(MouseEvent.MOUSE_PRESSED, (e)->{
             drawersStack.toggle(topDrawer);
         });
+    }
+
+    public void setThisStage(Stage stage)
+    {
+        this.thisStage = stage;
     }
 
 
@@ -208,7 +220,6 @@ public class VideoController implements Initializable {
                                 @Override public void run() { currentFrame.setImage(jFX_image); }
                             });
 
-                            sound = new Media(new File("audio/Triton.mp3").toURI().toString());
                             mediaPlayer = new MediaPlayer(sound);
                             mediaPlayer.play();
                         }
