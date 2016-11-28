@@ -273,9 +273,9 @@ public class VideoController implements Initializable {
         @Override
         public Void call() {
 
-            Runnable listen = new Runnable() {
-                @Override
-                public void run() {
+            //Runnable listen = new Runnable() {
+                //@Override
+                //public void run() {
                     //TODO Debug
                     System.out.println("try start");
                     //TODO Debug
@@ -320,9 +320,9 @@ public class VideoController implements Initializable {
 
 
                     //future.cancel(false);
-                }
-            };
-            listen.run();
+                //}
+            //};
+            //listen.run();
             //executor = Executors.newSingleThreadScheduledExecutor();
             //executor.scheduleAtFixedRate(listen, 0, 50, TimeUnit.MILLISECONDS);
 
