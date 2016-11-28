@@ -78,7 +78,7 @@ public class VideoController implements Initializable {
 
         JFXDrawer bottomDrawer = new JFXDrawer();
         StackPane bottomDrawerPane = new StackPane();
-        bottomDrawerPane.getStyleClass().add("deep-purple-400");
+        bottomDrawerPane.getStyleClass().add("red-400");
         bottomDrawerPane.getChildren().add(new JFXButton("Bottom Content"));
         bottomDrawer.setDefaultDrawerSize(150);
         bottomDrawer.setDirection(JFXDrawer.DrawerDirection.BOTTOM);
@@ -346,7 +346,7 @@ public class VideoController implements Initializable {
                                     System.out.println("Unknown Request code");
                                 }
 
-                            }catch (EOFException eo){eo.printStackTrace();}
+                            }catch (EOFException eo){}
                              catch (Exception e){e.printStackTrace();}
                         }
                         return null;

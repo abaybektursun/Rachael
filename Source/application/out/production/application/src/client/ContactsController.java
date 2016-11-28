@@ -289,7 +289,7 @@ public class ContactsController implements Initializable {
             videoScene.setFill(Color.TRANSPARENT);
             videoStage.setScene(videoScene);
             //videoStage.setResizable(false);
-            videoStage.initStyle(StageStyle.TRANSPARENT);
+            videoStage.initStyle(StageStyle.UTILITY);
             //videoStage.show();
         } catch (Exception e) {
             e.printStackTrace();
