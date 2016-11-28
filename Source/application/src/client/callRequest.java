@@ -4,7 +4,6 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 
 import org.opencv.core.Mat;
-import org.opencv.highgui.Highgui;
 import org.opencv.highgui.VideoCapture;
 
 import javax.imageio.ImageIO;
@@ -12,13 +11,16 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
 
 class callRequest extends Task {
     String IP;
     Session session;
     public volatile boolean sendddd = false;
+    public volatile boolean receiveeee = false;
+
+    ExecutorService executionThreadPool;
 
     public final static int ALLOCATE_BUFFER = 5022386;
     public final static int RESPONSE_BUFFER_SIZE = 128;
@@ -43,6 +45,7 @@ class callRequest extends Task {
 
         if (capture.isOpened()) {
             sendddd = true;
+            receiveeee = true;
             boolean connected = false;
             try (
                     Socket socket = new Socket(IP, session.getDefaultPort());
@@ -53,61 +56,89 @@ class callRequest extends Task {
                         ObjectOutputStream out_stream = new ObjectOutputStream(socket.getOutputStream());
                         ObjectInputStream in_stream = new ObjectInputStream(socket.getInputStream());
                 ){
-                    while (sendddd) {
-                        // Capture a frame from camera
-                        Mat frame = new Mat();
-                        capture.read(frame);
-                        // convert and show the frame
-                        BufferedImage singleFrame = RachaelUtil.Mat2BufferedImage(frame);
-
-                        int response;
 
 
-                        ArrayList<Object> out_data = new ArrayList<Object>();
-                        out_data.add(session.CODE_CALL_REQUEST);
+                    Task request = new Task<Void>() {
+                        @Override
+                        protected Void call() {
+                            while (sendddd) {
+                                // Capture a frame from camera
+                                Mat frame = new Mat();
+                                capture.read(frame);
+                                // convert and show the frame
+                                BufferedImage singleFrame = RachaelUtil.Mat2BufferedImage(frame);
 
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        ImageIO.write(singleFrame, "jpg", baos);
-                        baos.flush();
-                        byte[] imageInByte = baos.toByteArray();
-
-                        out_data.add(imageInByte);
-                        out_stream.writeObject(out_data);
-                        baos.close();
-
-                        // TODO Remove debug
-                        System.out.println("Sent!");
-                        // TODO Remove debug
+                                int response;
 
 
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                try{
-                                    ArrayList<Object> in_data;
-                                    // This will result EOFException if there is no more data in the queue
-                                    in_data = (ArrayList<Object>) in_stream.readObject();
-                                    int scenario = (Integer) in_data.get(0);
-                                    if(scenario == session.DECLINED)
-                                    {
-                                        capture.release();
-                                        sendddd = false;
-                                    }
+                                ArrayList<Object> out_data = new ArrayList<Object>();
+                                out_data.add(session.CODE_CALL_REQUEST);
+
+                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                try {
+                                    ImageIO.write(singleFrame, "jpg", baos);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
                                 }
-                                catch (SocketTimeoutException toe) {
-                                    toe.printStackTrace();
+                                try {
+                                    baos.flush();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
                                 }
-                                // Empty Stream, or it's ended
-                                // Assuming this is fine case
-                                catch (EOFException eofe) {
+                                byte[] imageInByte = baos.toByteArray();
+
+                                out_data.add(imageInByte);
+                                try {
+                                    out_stream.writeObject(out_data);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
                                 }
-                                catch (IOException ioe) {
-                                    ioe.printStackTrace();
+                                try {
+                                    baos.close();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
                                 }
-                                catch (Exception e){e.printStackTrace();}
+
+                                // TODO Remove debug
+                                System.out.println("Sent!");
+                                // TODO Remove debug
                             }
-                        });
-                    }
+                            return null;
+                        }
+                    };
+                    executionThreadPool.submit(request);
+
+                    Task respond = new Task<Void>() {
+                        @Override
+                        protected Void call() {
+                            try{
+                                ArrayList<Object> in_data;
+                                // This will result EOFException if there is no more data in the queue
+                                in_data = (ArrayList<Object>) in_stream.readObject();
+                                int scenario = (Integer) in_data.get(0);
+                                if(scenario == session.DECLINED)
+                                {
+                                    capture.release();
+                                    sendddd = false;
+                                }
+                            }
+                            catch (SocketTimeoutException toe) {
+                                toe.printStackTrace();
+                            }
+                            // Empty Stream, or it's ended
+                            // Assuming this is fine case
+                            catch (EOFException eofe) {
+                            }
+                            catch (IOException ioe) {
+                                ioe.printStackTrace();
+                            }
+                            catch (Exception e){e.printStackTrace();}
+                            return null;
+                        }
+                    };
+                    executionThreadPool.submit(respond);
+
+
 
                 }
                 catch (Exception cnfe) {

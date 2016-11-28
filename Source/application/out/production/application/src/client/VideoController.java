@@ -23,9 +23,7 @@ import org.opencv.highgui.VideoCapture;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
 import java.io.*;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.net.URL;
@@ -284,9 +282,10 @@ public class VideoController implements Initializable {
                 boolean first_frame = true;
                 while (listen) {
                     try {
-                        Platform.runLater(new Runnable() {
+
+                        Task respond = new Task<Void>() {
                             @Override
-                            public void run() {
+                            protected Void call() {
                                 ArrayList<Object> out_data = new ArrayList<Object>();
                                 out_data.add(session.NO_RESPONSE);
                                 try {
@@ -294,8 +293,10 @@ public class VideoController implements Initializable {
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
+                                return null;
                             }
-                        });
+                        };
+                        executionThreadPool.submit(respond);
 
                         //TODO Debug
                         System.out.println("loop");
