@@ -17,6 +17,16 @@ public class Session implements Serializable {
     public final int AVAILABLE = 1;
     public final int BUSY = 2;
 
+    public static final int CODE_CALL_REQUEST = 44;
+    public static final int CODE_ROLL_BACK_CALL_REQUEST = 43;
+
+
+
+    public final int NO_RESPONSE = 0;
+    public final int ACCEPTED    = 1;
+    public final int DECLINED    = 2;
+
+
 
     public ArrayList<Contact> contacts;
 

@@ -6,13 +6,7 @@ import java.awt.image.DataBufferByte;
 
 class RachaelUtil {
 
-    public static final int CODE_CALL_REQUEST = 11;
 
-    private final int NO_RESPONSE = 0;
-    private final int ACCEPTED    = 1;
-    private final int DECLINED    = 2;
-
-    private final int DEFAULT_SERVER_PORT = 3141;
 
     public static BufferedImage Mat2BufferedImage(Mat matrix){
 
