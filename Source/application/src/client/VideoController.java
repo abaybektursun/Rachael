@@ -260,7 +260,8 @@ public class VideoController implements Initializable {
         Stage videoStage;
         ScheduledFuture<?> future;
         Socket socket;
-        public volatile boolean listen = false;
+        public volatile boolean continListening = false;
+        public volatile boolean responding = false;
 
         public callReceiver(Socket socket)
         {
@@ -269,12 +270,18 @@ public class VideoController implements Initializable {
 
         @Override
         public Void call() {
-            listen = true;
+            continListening = true;
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
             //TODO Debug
             System.out.println("try start");
             //TODO Debug
             try (
+
                     // IO streams
                     ObjectOutputStream out_stream = new ObjectOutputStream(socket.getOutputStream());
                     ObjectInputStream in_stream = new ObjectInputStream(socket.getInputStream());
@@ -285,7 +292,7 @@ public class VideoController implements Initializable {
                     @Override
                     protected Void call() {
                         boolean first_frame = true;
-                        while (listen) {
+                        while (continListening) {
                             try {
                                 //TODO Debug
                                 System.out.println("loop");
@@ -337,7 +344,8 @@ public class VideoController implements Initializable {
                                             videoStage.hide();
                                         }
                                     });
-                                    listen = false;
+                                    continListening = false;
+                                    responding=false;
                                     break;
                                 } else {
                                     System.out.println("Unknown Request code");
@@ -353,17 +361,24 @@ public class VideoController implements Initializable {
                 Task miniRespond = new Task<Void>() {
                     @Override
                     protected Void call() {
-                        ArrayList<Object> out_data = new ArrayList<Object>();
-                        out_data.add(session.NO_RESPONSE);
-                        try {
-                            out_stream.writeObject(out_data);
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                        while(responding) {
+                            ArrayList<Object> out_data = new ArrayList<Object>();
+                            out_data.add(session.NO_RESPONSE);
+                            try {
+                                out_stream.writeObject(out_data);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                         return null;
                     }
                 };
                 executionThreadPool.submit(miniRespond);
+
+                while (continListening && responding)
+                {
+                    //wait
+                }
 
             } catch (SocketTimeoutException toe) {
                 toe.printStackTrace();
