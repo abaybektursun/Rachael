@@ -75,7 +75,7 @@ class FaceDetection implements Runnable {
                                                   public void run() {
                                                       contactsStage.show();
                                                   }
-                                              });
+                            });
 
                             System.out.println("FACE_DETECTED");
                             runnable = false;
