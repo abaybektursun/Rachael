@@ -1,5 +1,6 @@
 package client;
 
+import javafx.application.Platform;
 import javafx.concurrent.Task;
 
 import org.opencv.core.Mat;
@@ -78,28 +79,36 @@ class callRequest extends Task {
                         System.out.println("Sent!");
                         // TODO Remove debug
 
-                        try{
-                            ArrayList<Object> in_data;
-                            // This will result EOFException if there is no more data in the queue
-                            in_data = (ArrayList<Object>) in_stream.readObject();
-                            int scenario = (Integer) in_data.get(0);
-                            if(scenario == session.DECLINED)
-                            {
-                                capture.release();
-                                break;
+
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                try{
+                                    ArrayList<Object> in_data;
+                                    // This will result EOFException if there is no more data in the queue
+                                    in_data = (ArrayList<Object>) in_stream.readObject();
+                                    int scenario = (Integer) in_data.get(0);
+                                    if(scenario == session.DECLINED)
+                                    {
+                                        capture.release();
+                                        sendddd = false;
+                                    }
+                                }
+                                catch (SocketTimeoutException toe) {
+                                    toe.printStackTrace();
+                                }
+                                // Empty Stream, or it's ended
+                                // Assuming this is fine case
+                                catch (EOFException eofe) {
+                                }
+                                catch (IOException ioe) {
+                                    ioe.printStackTrace();
+                                }
+                                catch (Exception e){e.printStackTrace();}
                             }
-                        }
-                        catch (SocketTimeoutException toe) {
-                            toe.printStackTrace();
-                        }
-                        // Empty Stream, or it's ended
-                        // Assuming this is fine case
-                        catch (EOFException eofe) {
-                        }
-                        catch (IOException ioe) {
-                            ioe.printStackTrace();
-                        }
+                        });
                     }
+
                 }
                 catch (Exception cnfe) {
                     cnfe.printStackTrace();
