@@ -120,8 +120,16 @@ class callRequest extends Task {
                                         sendddd = false;
                                         miniReceive = false;
                                     }
-                                } catch (SocketTimeoutException toe) {
+                                }
+                                catch (SocketTimeoutException toe) {
                                     toe.printStackTrace();
+                                }
+                                catch (SocketException se){
+                                    se.printStackTrace();
+                                    sendddd = false;
+                                    miniReceive = false;
+                                    capture.release();
+
                                 }
                                 // Empty Stream, or it's ended
                                 // Assuming this is fine case
@@ -155,10 +163,6 @@ class callRequest extends Task {
                 catch (Exception cnfe) {
                     cnfe.printStackTrace();
                 }
-
-
-
-
             }
             catch (Exception e) {
                 e.printStackTrace();
