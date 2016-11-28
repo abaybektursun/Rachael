@@ -83,14 +83,14 @@ public class VideoController implements Initializable {
         initDrawers();
         sound = new Media(new File("audio/Triton.mp3").toURI().toString());
 
-        currentFrame.setOnMousePressed(new EventHandler<MouseEvent>() {
+        drawersStack.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 xOffset = event.getSceneX();
                 yOffset = event.getSceneY();
             }
         });
-        currentFrame.setOnMouseDragged(
+        drawersStack.setOnMouseDragged(
                 new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
