@@ -3,6 +3,7 @@ package client;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 
+import javafx.stage.Stage;
 import org.opencv.core.Mat;
 import org.opencv.highgui.VideoCapture;
 
@@ -28,10 +29,15 @@ class callRequest extends Task {
     public final static int ALLOCATE_BUFFER = 5022386;
     public final static int RESPONSE_BUFFER_SIZE = 128;
 
-    public callRequest(String IP, Session session){
+    Stage videoStage;
+    VideoController videoControl;
+
+    public callRequest(String IP, Session session, Stage videoStage, VideoController videoControl){
         this.IP = IP;
         this.session = session;
         executionThreadPool = Executors.newCachedThreadPool();
+        this.videoStage = videoStage;
+        this.videoControl = videoControl;
     }
 
     @Override
@@ -89,11 +95,6 @@ class callRequest extends Task {
                                 out_data.add(imageInByte);
                                 out_stream.writeObject(out_data);
                                 baos.close();
-
-
-                                // TODO Remove debug
-                                System.out.println("Sent!");
-                                // TODO Remove debug
                             }
                             return null;
                         }
@@ -113,6 +114,15 @@ class callRequest extends Task {
                                         capture.release();
                                         sendddd = false;
                                         miniReceive = false;
+                                        break;
+                                    }
+                                    else if(scenario == session.ACCEPTED)
+                                    {
+                                        miniReceive = false;
+                                        callAcceptedOut = true;
+
+
+                                        break;
                                     }
                                 }
                                 catch (SocketTimeoutException toe) {
