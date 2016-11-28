@@ -58,7 +58,14 @@ class callRequest extends Task {
 
                 ArrayList<Object> out_data = new ArrayList<Object>();
                 out_data.add(RachaelUtil.CODE_CALL_REQUEST);
-                out_data.add(singleFrame);
+
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ImageIO.write( singleFrame, "jpg", baos );
+                baos.flush();
+                byte[] imageInByte = baos.toByteArray();
+
+
+                out_data.add(imageInByte);
                 out_stream.writeObject(out_data);
 
                 // TODO Remove debug
@@ -66,6 +73,7 @@ class callRequest extends Task {
                 // TODO Remove debug
 
                 out_stream.close();
+                baos.close();
                 in_stream.close();
                 socket.close();
             }

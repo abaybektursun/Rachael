@@ -271,34 +271,29 @@ public class ContactsController implements Initializable {
 
 
     private void initVideoChat() {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    FXMLLoader fxmlLoaderVideo = new FXMLLoader(getClass().getResource("VideoView.fxml"));
-                    videoController = (VideoController)fxmlLoaderVideo.getController();
-                    Parent videoRoot = (Parent) fxmlLoaderVideo.load();
-                    VideoController videoControl = fxmlLoaderVideo.<VideoController>getController();
-                    videoControl.setServerProtocol(server);
-                    videoControl.setSession(session);
-                    videoControl.initServices();
-                    videoStage = new Stage();
-                    //videoStage.initModality(Modality.WINDOW_MODAL);
-                    videoStage.setTitle("Video Chat");
-                    final Scene videoScene = new Scene(videoRoot);
-                    // Load the style sheet
-                    videoScene.getStylesheets().add(getClass().getResource("jfoenix-components.css").toExternalForm());
-                    videoScene.getStylesheets().add(getClass().getResource("jfoenix-design.css").toExternalForm());
-                    videoScene.setFill(Color.TRANSPARENT);
-                    videoStage.setScene(videoScene);
-                    //videoStage.setResizable(false);
-                    videoStage.initStyle(StageStyle.TRANSPARENT);
-                    //videoStage.show();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        try {
+            FXMLLoader fxmlLoaderVideo = new FXMLLoader(getClass().getResource("VideoView.fxml"));
+            //videoController = (VideoController)fxmlLoaderVideo.getController();
+            Parent videoRoot = (Parent) fxmlLoaderVideo.load();
+            videoController = fxmlLoaderVideo.<VideoController>getController();
+            videoController.setServerProtocol(server);
+            videoController.setSession(session);
+            videoController.initServices();
+            videoStage = new Stage();
+            //videoStage.initModality(Modality.WINDOW_MODAL);
+            videoStage.setTitle("Video Chat");
+            final Scene videoScene = new Scene(videoRoot);
+            // Load the style sheet
+            videoScene.getStylesheets().add(getClass().getResource("jfoenix-components.css").toExternalForm());
+            videoScene.getStylesheets().add(getClass().getResource("jfoenix-design.css").toExternalForm());
+            videoScene.setFill(Color.TRANSPARENT);
+            videoStage.setScene(videoScene);
+            //videoStage.setResizable(false);
+            videoStage.initStyle(StageStyle.TRANSPARENT);
+            //videoStage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void setServerProtocol(ServerProtocol server)
