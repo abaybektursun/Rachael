@@ -279,83 +279,91 @@ public class VideoController implements Initializable {
                     ObjectOutputStream out_stream = new ObjectOutputStream(socket.getOutputStream());
                     ObjectInputStream in_stream = new ObjectInputStream(socket.getInputStream());
             ) {
-                boolean first_frame = true;
-                while (listen) {
-                    try {
-
-                        Task respond = new Task<Void>() {
-                            @Override
-                            protected Void call() {
-                                ArrayList<Object> out_data = new ArrayList<Object>();
-                                out_data.add(session.NO_RESPONSE);
-                                try {
-                                    out_stream.writeObject(out_data);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                                return null;
-                            }
-                        };
-                        executionThreadPool.submit(respond);
-
-                        //TODO Debug
-                        System.out.println("loop");
-                        //TODO Debug
-                        ArrayList<Object> in_data;
-                        // This will result EOFException if there is no more data in the queue
-                        in_data = (ArrayList<Object>) in_stream.readObject();
-                        int scenario = (Integer) in_data.get(0);
-
-                        if (scenario == Session.CODE_CALL_REQUEST) {
-                            byte[] imageInByte = (byte[]) in_data.get(1);
-                            InputStream in = new ByteArrayInputStream(imageInByte);
-                            BufferedImage bImageFromConvert = ImageIO.read(in);
 
 
-                            Image jFX_image = SwingFXUtils.toFXImage(bImageFromConvert, null);
+                Task endListen = new Task<Void>() {
+                    @Override
+                    protected Void call() {
+                        boolean first_frame = true;
+                        while (listen) {
+                            try {
+                                //TODO Debug
+                                System.out.println("loop");
+                                //TODO Debug
+                                ArrayList<Object> in_data;
+                                // This will result EOFException if there is no more data in the queue
+                                in_data = (ArrayList<Object>) in_stream.readObject();
+                                int scenario = (Integer) in_data.get(0);
+
+                                if (scenario == Session.CODE_CALL_REQUEST) {
+                                    byte[] imageInByte = (byte[]) in_data.get(1);
+                                    InputStream in = new ByteArrayInputStream(imageInByte);
+                                    BufferedImage bImageFromConvert = ImageIO.read(in);
 
 
-                            if (first_frame) {
-                                Platform.runLater(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        int camWidth  = bImageFromConvert.getWidth();
-                                        int camHeight = bImageFromConvert.getHeight();
+                                    Image jFX_image = SwingFXUtils.toFXImage(bImageFromConvert, null);
 
-                                        drawersStack.setPrefSize(camWidth, camHeight);
-                                        currentFrame.setFitHeight(camHeight);
-                                        currentFrame.setFitWidth(camWidth);
-                                        mainPane.setPrefSize(camWidth, camHeight);
-                                        borderPane.setPrefSize(camWidth, camHeight);
-                                        bottomButton.setPrefSize(camWidth, camHeight / 3);
-                                        topButton.setPrefSize(camWidth, camHeight / 3);
+
+                                    if (first_frame) {
+                                        Platform.runLater(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                int camWidth  = bImageFromConvert.getWidth();
+                                                int camHeight = bImageFromConvert.getHeight();
+
+                                                drawersStack.setPrefSize(camWidth, camHeight);
+                                                currentFrame.setFitHeight(camHeight);
+                                                currentFrame.setFitWidth(camWidth);
+                                                mainPane.setPrefSize(camWidth, camHeight);
+                                                borderPane.setPrefSize(camWidth, camHeight);
+                                                bottomButton.setPrefSize(camWidth, camHeight / 3);
+                                                topButton.setPrefSize(camWidth, camHeight / 3);
+                                            }
+                                        });
+                                        first_frame = false;
                                     }
-                                });
-                                first_frame = false;
-                            }
 
 
-                            Platform.runLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    currentFrame.setImage(jFX_image);
+                                    Platform.runLater(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            currentFrame.setImage(jFX_image);
+                                        }
+                                    });
+                                } else if (scenario == Session.CODE_ROLL_BACK_CALL_REQUEST) {
+                                    Platform.runLater(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            videoStage.hide();
+                                        }
+                                    });
+                                    listen = false;
+                                    break;
+                                } else {
+                                    System.out.println("Unknown Request code");
                                 }
-                            });
-                        } else if (scenario == Session.CODE_ROLL_BACK_CALL_REQUEST) {
-                            Platform.runLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    videoStage.hide();
-                                }
-                            });
-                            listen = false;
-                            break;
-                        } else {
-                            System.out.println("Unknown Request code");
+
+                            }catch (Exception e){e.printStackTrace();}
                         }
+                        return null;
+                    }
+                };
+                executionThreadPool.submit(endListen);
 
-                    }catch (Exception e){e.printStackTrace();}
-                }
+                Task miniRespond = new Task<Void>() {
+                    @Override
+                    protected Void call() {
+                        ArrayList<Object> out_data = new ArrayList<Object>();
+                        out_data.add(session.NO_RESPONSE);
+                        try {
+                            out_stream.writeObject(out_data);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        return null;
+                    }
+                };
+                executionThreadPool.submit(miniRespond);
 
             } catch (SocketTimeoutException toe) {
                 toe.printStackTrace();
