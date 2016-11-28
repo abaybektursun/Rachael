@@ -11,9 +11,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
@@ -47,6 +45,8 @@ public class VideoController implements Initializable {
     @FXML
     private JFXButton bottomButton;
 
+    JFXButton acceptB;
+
     ServerProtocol server;
     Session session;
 
@@ -68,39 +68,47 @@ public class VideoController implements Initializable {
 
     private void initDrawers(){
         //content.setMaxSize(200, 200);
-        JFXDrawer leftDrawer = new JFXDrawer();
-        StackPane leftDrawerPane = new StackPane();
-        leftDrawerPane.getStyleClass().add("red-400");
-        leftDrawerPane.getChildren().add(new JFXButton("Left Content"));
-        leftDrawer.setSidePane(leftDrawerPane);
-        leftDrawer.setDefaultDrawerSize(150);
-        leftDrawer.setOverLayVisible(false);
-        leftDrawer.setResizableOnDrag(true);
+
+
+        //JFXDrawer leftDrawer = new JFXDrawer();
+        //StackPane leftDrawerPane = new StackPane();
+        //leftDrawerPane.getStyleClass().add("red-400");
+        //leftDrawerPane.getChildren().add(new JFXButton("Left Content"));
+        //leftDrawer.setSidePane(leftDrawerPane);
+        //leftDrawer.setDefaultDrawerSize(150);
+        //leftDrawer.setOverLayVisible(false);
+        //leftDrawer.setResizableOnDrag(true);
 
         JFXDrawer bottomDrawer = new JFXDrawer();
         StackPane bottomDrawerPane = new StackPane();
         bottomDrawerPane.getStyleClass().add("red-400");
-        bottomDrawerPane.getChildren().add(new JFXButton("Bottom Content"));
+        JFXButton cancelB = new JFXButton("Cancel Call");
+        bottomDrawerPane.getChildren().add(cancelB);
         bottomDrawer.setDefaultDrawerSize(150);
         bottomDrawer.setDirection(JFXDrawer.DrawerDirection.BOTTOM);
         bottomDrawer.setSidePane(bottomDrawerPane);
         bottomDrawer.setOverLayVisible(false);
         bottomDrawer.setResizableOnDrag(true);
 
-        JFXDrawer rightDrawer = new JFXDrawer();
-        StackPane rightDrawerPane = new StackPane();
-        rightDrawerPane.getStyleClass().add("blue-400");
-        rightDrawerPane.getChildren().add(new JFXButton("Right Content"));
-        rightDrawer.setDirection(JFXDrawer.DrawerDirection.RIGHT);
-        rightDrawer.setDefaultDrawerSize(150);
-        rightDrawer.setSidePane(rightDrawerPane);
-        rightDrawer.setOverLayVisible(false);
-        rightDrawer.setResizableOnDrag(true);
+        //JFXDrawer rightDrawer = new JFXDrawer();
+        //StackPane rightDrawerPane = new StackPane();
+        //rightDrawerPane.getStyleClass().add("blue-400");
+        //rightDrawerPane.getChildren().add(new JFXButton("Right Content"));
+        //rightDrawer.setDirection(JFXDrawer.DrawerDirection.RIGHT);
+        //rightDrawer.setDefaultDrawerSize(150);
+        //rightDrawer.setSidePane(rightDrawerPane);
+        //rightDrawer.setOverLayVisible(false);
+        //rightDrawer.setResizableOnDrag(true);
 
         JFXDrawer topDrawer = new JFXDrawer();
         StackPane topDrawerPane = new StackPane();
         topDrawerPane.getStyleClass().add("green-400");
-        topDrawerPane.getChildren().add(new JFXButton("Top Content"));
+        acceptB = new JFXButton("Accept");
+        BackgroundImage backgroundImage = new BackgroundImage( new Image("img/phone_icon.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
+        Background acceptBbackground = new Background(backgroundImage);
+        acceptB.setBackground(acceptBbackground);
+
+        topDrawerPane.getChildren().add(acceptB);
         topDrawer.setDirection(JFXDrawer.DrawerDirection.TOP);
         topDrawer.setDefaultDrawerSize(150);
         topDrawer.setSidePane(topDrawerPane);
@@ -108,8 +116,8 @@ public class VideoController implements Initializable {
         topDrawer.setResizableOnDrag(true);
 
         drawersStack.setContent(borderPane);
-        leftDrawer.setId("LEFT");
-        rightDrawer.setId("RIGHT");
+        //leftDrawer.setId("LEFT");
+        //rightDrawer.setId("RIGHT");
         bottomDrawer.setId("BOT");
         topDrawer.setId("TOP");
 

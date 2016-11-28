@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
@@ -143,12 +144,20 @@ class callRequest extends Task {
                         //wait
                     }
 
-
+                }
+                catch (SocketException se){
+                    se.printStackTrace();
+                    sendddd = false;
+                    miniReceive = false;
+                    capture.release();
 
                 }
                 catch (Exception cnfe) {
                     cnfe.printStackTrace();
                 }
+
+
+
 
             }
             catch (Exception e) {
