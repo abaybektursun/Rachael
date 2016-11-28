@@ -49,7 +49,7 @@ class callRequest extends Task {
             try {
                 int response;
                 socket = new Socket(IP, session.getDefaultPort());
-                socket.setSoTimeout(2000);
+                socket.setSoTimeout(3000);
                 System.out.println("Connecting...");
 
                 // IO streams

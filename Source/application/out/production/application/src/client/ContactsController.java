@@ -215,6 +215,8 @@ public class ContactsController implements Initializable {
         renderRunnable = true;
         executionThreadPool.submit(renderContactsTask);
         initVideoChat();
+
+        // Call Listener
         callListener call_listener = new callListener(session, videoStage, videoController);
         executionThreadPool.submit(call_listener);
     }
@@ -268,7 +270,7 @@ public class ContactsController implements Initializable {
     }
 
 
-    private void initVideoChat(){
+    private void initVideoChat() {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
