@@ -13,6 +13,7 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 class callRequest extends Task {
     String IP;
@@ -28,6 +29,7 @@ class callRequest extends Task {
     public callRequest(String IP, Session session){
         this.IP = IP;
         this.session = session;
+        executionThreadPool = Executors.newCachedThreadPool();
     }
 
     @Override
