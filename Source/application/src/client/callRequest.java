@@ -144,19 +144,20 @@ class callRequest extends Task {
                         //wait
                     }
 
-
-
                 }
                 catch (SocketException se){
                     se.printStackTrace();
-                    capture.release();
                     sendddd = false;
                     miniReceive = false;
+                    capture.release();
 
                 }
                 catch (Exception cnfe) {
                     cnfe.printStackTrace();
                 }
+
+
+
 
             }
             catch (Exception e) {
