@@ -2,6 +2,8 @@ package client;
 
 import java.util.ArrayList;
 
+import javafx.application.Platform;
+import javafx.stage.Stage;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
@@ -17,6 +19,13 @@ import org.opencv.objdetect.CascadeClassifier;
 
 class FaceDetection implements Runnable {
     protected volatile boolean runnable = false;
+    Stage contactsStage;
+
+
+    public FaceDetection(Stage contactsStage)
+    {
+        this.contactsStage = contactsStage;
+    }
 
     @Override
     public void run() {
@@ -61,15 +70,25 @@ class FaceDetection implements Runnable {
 
                         if ( !cropped_faces.isEmpty() )
                         {
+                            Platform.runLater(new Runnable() {
+                                                  @Override
+                                                  public void run() {
+                                                      contactsStage.show();
+                                                  }
+                            });
+
                             System.out.println("FACE_DETECTED");
+                            runnable = false;
                             //view.setImage(new javafx.scene.image.Image("client/img/giphy2.gif"));
                         }
                         else
                         {
-                            System.out.println("NOT_DETECTED");
+                            //System.out.println("NOT_DETECTED");
                         }
 
                     } catch (Exception ex) {
+                        ex.printStackTrace();
+                        runnable = false;
                         System.out.println("Error");
                     }
                 }

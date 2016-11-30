@@ -1,6 +1,8 @@
 package client;
 
-public class Contact{
+import java.io.Serializable;
+
+public class Contact implements Serializable {
     public final String firstName;
     public final String lastName;
     public final int status;
