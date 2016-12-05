@@ -1,3 +1,8 @@
+# DO not ignore images
+!Source/application/img/*.png
+!Source/application/img/*.ico
+
+
 .metadata
 bin/
 tmp/
@@ -12,9 +17,10 @@ local.properties
 *hold.jpg
 *.jar
 *.jpg
-*.png
+#*.png
 *.caffemodel
 *.class
+.idea/
 
 # Eclipse Core
 .project
