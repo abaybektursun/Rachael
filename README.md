@@ -21,4 +21,5 @@
 - [ ] Fix the server OpenCV issue
 - [ ] Port the server to Windows
 - [ ] Add ability to add new contacts
+- [ ] Create pure JavaFX animation rather than CSS or GIF
 - [ ] Complete unit testing
