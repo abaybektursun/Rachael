@@ -1,3 +1,8 @@
+# DO not ignore images
+!Source/application/img/*.png
+!Source/application/img/*.ico
+
+
 .metadata
 bin/
 tmp/
@@ -12,7 +17,11 @@ local.properties
 *hold.jpg
 *.jar
 *.jpg
+<<<<<<< HEAD
 *.png
+=======
+#*.png
+>>>>>>> a19a6d071883b994f68d01949fd4a7ffa3a52930
 *.caffemodel
 *.class
 .idea/
