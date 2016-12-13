@@ -70,7 +70,7 @@ public class ServerProtocol {
         try {
             out_stream.writeObject(out_data);
         }catch (Exception exc){exc.printStackTrace();}
-    }
+}
 
     public void updateStatus(int status)
     {
@@ -93,7 +93,6 @@ public class ServerProtocol {
             out_stream.writeObject(out_data);
         }catch (Exception exc){exc.printStackTrace();}
     }
-
 
     public void closeServerConnection()
     {

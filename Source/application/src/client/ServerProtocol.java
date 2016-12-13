@@ -53,7 +53,7 @@ public class ServerProtocol {
         abay.contacts.add(new Contact("John","Mccullough",0, 1,"0"));
         abay.contacts.add(new Contact("Frank","Arnold",   0, 2,"0"));
         abay.contacts.add(new Contact("Dusty","Favorite",  1, 3,"192.168.1.103"));
-        abay.contacts.add(new Contact("Abay","Bektursun",   1, 4,"192.168.1.105"));
+        abay.contacts.add(new Contact("Abay","Bektursun",   1, 4,"192.168.2.3"));
         abay.contacts.add(new Contact("Alexa","Schmidt",  2, 5,"0"));
         abay.contacts.add(new Contact("Camryn","Kaiser",  2, 6,"0"));
         abay.contacts.add(new Contact("Veronica","Pace",  2, 7,"0"));
@@ -70,7 +70,7 @@ public class ServerProtocol {
         try {
             out_stream.writeObject(out_data);
         }catch (Exception exc){exc.printStackTrace();}
-    }
+}
 
     public void updateStatus(int status)
     {
@@ -93,7 +93,6 @@ public class ServerProtocol {
             out_stream.writeObject(out_data);
         }catch (Exception exc){exc.printStackTrace();}
     }
-
 
     public void closeServerConnection()
     {
