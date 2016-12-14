@@ -1,7 +1,5 @@
 # Rachael
 
-<<<<<<< HEAD
-=======
 #### Application Client Steps
 
 1. Application start
@@ -25,4 +23,3 @@
 - [ ] Add ability to add new contacts
 - [ ] Create pure JavaFX animation rather than CSS or GIF
 - [ ] Complete unit testing
->>>>>>> a19a6d071883b994f68d01949fd4a7ffa3a52930
