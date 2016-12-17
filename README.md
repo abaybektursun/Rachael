@@ -1,4 +1,5 @@
 # Rachael
+  JavaFX video chat application with minimal material design. Application uses OpenCV for image processing, face detection, recognition and accessing media devices. Video transmission and communication was implemented using TCP sockets.
 
 #### Application Client Steps
 
